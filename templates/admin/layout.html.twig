@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% block admin_title %}Admin Control Center{% endblock %} | Orcullo Custom Controllers{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-page-wrapper">
+    <main class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1>Admin <span class="username-highlight">Control Center</span></h1>
+            <p>Manage product catalog, stock inventory, user accounts, and platform orders.</p>
+        </div>
+
+        <div class="admin-layout">
+            <!-- Sidebar Navigation -->
+            <aside class="admin-sidebar-nav">
+                <a href="{{ path('admin_dashboard') }}" class="admin-nav-item {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="{{ path('admin_products') }}" class="admin-nav-item {{ app.request.attributes.get('_route') == 'admin_products' ? 'active' : '' }}">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <span>Products</span>
+                </a>
+                <a href="{{ path('admin_users') }}" class="admin-nav-item {{ app.request.attributes.get('_route') == 'admin_users' ? 'active' : '' }}">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="{{ path('admin_orders') }}" class="admin-nav-item {{ app.request.attributes.get('_route') == 'admin_orders' ? 'active' : '' }}">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>Orders</span>
+                </a>
+            </aside>
+
+            <!-- Admin Subpage Content -->
+            <section class="admin-content-area">
+                {% block admin_content %}{% endblock %}
+            </section>
+        </div>
+    </main>
+</div>
+{% endblock %}

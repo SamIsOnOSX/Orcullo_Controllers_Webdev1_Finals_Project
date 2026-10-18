@@ -1,0 +1,103 @@
+.hero-section {
+    padding-top: 80px !important; /* Reduced from 160px */
+    padding-bottom: 80px !important;
+    padding-left: 80px;
+    padding-right: 80px;
+    min-height: 0 !important; 
+    height: auto !important;
+    
+    background: linear-gradient(
+        90deg, 
+        rgba(10, 5, 16, 0.95) 0%, 
+        rgba(10, 5, 16, 0.75) 50%, 
+        rgba(10, 5, 16, 0.3) 100%
+    ), url('../Assets/Homepagemainimage.jpg') center right / cover no-repeat;
+    display: flex;
+    align-items: center;
+}
+
+.hero-content { max-width: 580px; }
+.hero-content h1 { font-size: 3.5rem; font-weight: 700; line-height: 1.1; margin-bottom: 20px; }
+.text-gradient { background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-content p { color: var(--text-muted); font-size: 15px; line-height: 1.6; margin-bottom: 30px; }
+.hero-buttons { display: flex; gap: 15px; }
+.hero-content {
+    max-width: 580px;
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+
+.text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-content p {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+/* Features Section - Cleanly Stacked */
+.features-section {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 60px 80px; 
+    
+    /* This overrides the stubborn cache and physically pushes the cards down */
+    margin-top: 0 !important; 
+    
+    /* Ensures this section has a solid black background so it doesn't float over anything */
+    background-color: var(--bg-dark, #0a0510) !important; 
+    
+    position: relative;
+    z-index: 10;
+}
+
+.feature-card {
+    background-color: var(--card-bg, #150a21);
+    padding: 24px 20px;
+    border-radius: 12px;
+    text-align: center;
+    flex: 1;
+    border: 1px solid var(--border-color, #2a1642);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.feature-icon { width: 28px; height: 28px; stroke: #ff9b44; margin-bottom: 8px; }
+.feature-card h3 { font-size: 13px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 4px; }
+.feature-card p { font-size: 12px; color: var(--text-muted); }
+
+.feature-icon {
+    width: 28px;
+    height: 28px;
+    stroke: #ff9b44;
+    margin-bottom: 8px;
+}
+
+.feature-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+}
+
+.feature-card p {
+    font-size: 12px;
+    color: var(--text-muted);
+}

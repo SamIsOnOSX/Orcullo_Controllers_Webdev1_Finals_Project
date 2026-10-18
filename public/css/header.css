@@ -1,0 +1,115 @@
+.main-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    
+    /* These three lines create the horizontal row layout */
+    display: flex; 
+    justify-content: flex-start;
+    align-items: center; 
+    
+    padding: 18px 80px;
+    background-color: #0a0510;
+    box-sizing: border-box; /* Ensures padding doesn't push the header off-screen */
+}
+
+.logo {
+    margin-right: 0; 
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    
+}
+
+.logo-image {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+}
+
+.text-logo {
+    height: 24px;
+    width: auto;
+    object-fit: contain;
+}
+
+.main-nav {
+    display: flex;
+    gap: 25px;
+    margin-left: auto;
+    margin-right: 40px;
+    margin-right: 30px;
+}
+
+.main-nav a,
+.main-nav a:visited {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.main-nav a.active,
+.main-nav a:hover {
+    color: #ff9b44;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-actions .icon-link {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 14px; /* Adjusts the size of the Font Awesome icons */
+    margin-left: 5px;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.header-actions .icon-link:hover {
+    color: #8E3BB5; /* Purple hover effect */
+    transform: scale(1.1);
+}
+
+.search-bar input {
+    background-color: #1a1028;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 7px 16px;
+    color: var(--text-light);
+    font-size: 13px;
+    outline: none;
+    width: 170px;
+    transition: border-color 0.2s ease;
+}
+
+.search-bar input:focus {
+    border-color: #ff41a1;
+}
+
+.search-bar input::placeholder {
+    color: #666666;
+}
+
+.header-actions .icon {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.header-actions .icon:hover {
+    color: #ff9b44;
+}

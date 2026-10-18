@@ -1,0 +1,94 @@
+.main-footer {
+    background-color: #0a0510;
+    padding: 60px 80px 20px;
+    color: #ffffff;
+    border-top: 1px solid #2a1642;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-column p {
+    color: #a0a0a0;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-top: 15px;
+    max-width: 300px;
+}
+
+.footer-column h4 {
+    font-size: 14px;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+/* Forces the links to stack vertically and removes the default purple */
+.links-column a {
+    display: block; 
+    color: #a0a0a0;
+    text-decoration: none;
+    margin-bottom: 12px;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.links-column a:hover {
+    color: #FF3D9A;
+}
+
+.links-column .unclickable-item {
+    display: block;
+    color: #777777;
+    margin-bottom: 12px;
+    font-size: 14px;
+    cursor: default;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Newsletter Form Styling */
+.newsletter-form {
+    display: flex;
+    margin-top: 15px;
+}
+
+.newsletter-form input {
+    flex: 1;
+    padding: 10px 15px;
+    background-color: #150a21;
+    border: 1px solid #2a1642;
+    border-right: none; /* Merges seamlessly with the button */
+    border-radius: 4px 0 0 4px;
+    color: #ffffff;
+    outline: none;
+}
+
+.newsletter-form button {
+    padding: 10px 20px;
+    background: linear-gradient(90deg, #6A1B9A 0%, #FF3D9A 100%);
+    border: none;
+    border-radius: 0 4px 4px 0;
+    color: #ffffff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.newsletter-form button:hover {
+    opacity: 0.85;
+}
+
+.footer-bottom {
+    text-align: center;
+    border-top: 1px solid #2a1642;
+    padding-top: 20px;
+}
+
+.footer-bottom p {
+    color: #666;
+    font-size: 12px;
+}

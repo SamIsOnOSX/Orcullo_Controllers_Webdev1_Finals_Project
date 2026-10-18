@@ -1,0 +1,28 @@
+<div class="dashboard-card">
+    <h3><i class="fa-solid fa-plus-circle card-icon"></i>Create New Product</h3>
+    <form onsubmit="return false;">
+        <div class="form-row">
+            <div class="form-group flex-2">
+                <label for="prod_name">Product Name *</label>
+                <input type="text" id="prod_name" name="name" placeholder="e.g. Orcullo HitBox Pro">
+            </div>
+            <div class="form-group flex-1">
+                <label for="prod_price">Price ($) *</label>
+                <input type="number" id="prod_price" name="price" step="0.01" min="0" placeholder="e.g. 199.99">
+            </div>
+            <div class="form-group flex-1">
+                <label for="prod_stock">Initial Stock *</label>
+                <input type="number" id="prod_stock" name="stock" min="0" value="10">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="prod_description">Description</label>
+            <textarea id="prod_description" name="description" placeholder="Product features, layout specifications, compatibility..."></textarea>
+        </div>
+
+        <button type="button" class="btn-primary btn-create-product">
+            <i class="fa-solid fa-plus"></i> Create Product
+        </button>
+    </form>
+</div>

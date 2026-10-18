@@ -1,0 +1,56 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}Overview{% endblock %}
+
+{% block admin_content %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 25px;">
+        <div class="dashboard-card" style="margin-bottom: 0; text-align: center; padding: 24px;">
+            <p style="color: #a0a0a0; margin: 0 0 8px 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">Total Products</p>
+            <h2 style="font-size: 2.2rem; margin: 0; color: #ff9b44;">{{ total_products }}</h2>
+        </div>
+        <div class="dashboard-card" style="margin-bottom: 0; text-align: center; padding: 24px;">
+            <p style="color: #a0a0a0; margin: 0 0 8px 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">Registered Users</p>
+            <h2 style="font-size: 2.2rem; margin: 0; color: #c084fc;">{{ total_users }}</h2>
+        </div>
+        <div class="dashboard-card" style="margin-bottom: 0; text-align: center; padding: 24px;">
+            <p style="color: #a0a0a0; margin: 0 0 8px 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">Total Orders</p>
+            <h2 style="font-size: 2.2rem; margin: 0; color: #ff41a1;">{{ total_orders }}</h2>
+        </div>
+    </div>
+
+    <!-- Recent Orders Preview -->
+    <div class="dashboard-card table-responsive">
+        <div class="card-header-bar" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">
+                <i class="fa-solid fa-clock-rotate-left card-icon"></i>Recent Orders
+            </h3>
+            <a href="{{ path('admin_orders') }}" style="color: #ff9b44; font-size: 0.88rem; text-decoration: none;">View All &gt;</a>
+        </div>
+        {% if recent_orders is empty %}
+            <p class="empty-text">No recent orders placed yet.</p>
+        {% else %}
+            <table class="order-table" style="margin-top: 15px;">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in recent_orders %}
+                        <tr>
+                            <td>#{{ order.id }}</td>
+                            <td>{{ order.user ? order.user.username : 'Unknown' }}</td>
+                            <td>{{ order.createdAt ? order.createdAt|date('M j, Y') : '-' }}</td>
+                            <td>${{ order.totalAmount|number_format(2) }}</td>
+                            <td><span style="text-transform: capitalize; color: #ff9b44;">{{ order.status }}</span></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock %}

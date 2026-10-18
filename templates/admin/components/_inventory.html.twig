@@ -1,0 +1,47 @@
+<div class="dashboard-card table-responsive">
+    <h3><i class="fa-solid fa-boxes-stacked card-icon"></i>Inventory & Stock Management ({{ products|length }})</h3>
+    {% if products is empty %}
+        <p class="empty-text">No products found in the catalog.</p>
+    {% else %}
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th class="col-image">Image</th>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Current Stock</th>
+                    <th class="text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>
+                            {% if product.imagePath %}
+                                <img src="{{ asset(product.imagePath) }}" alt="{{ product.name }}" class="product-thumb-img">
+                            {% else %}
+                                <div class="product-thumb-placeholder"><i class="fa-solid fa-image"></i></div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ product.name }}</strong>
+                            {% if product.description %}
+                                <div class="product-desc-preview" title="{{ product.description }}">{{ product.description }}</div>
+                            {% endif %}
+                        </td>
+                        <td>${{ product.price|number_format(2) }}</td>
+                        <td>
+                            <div class="stock-form">
+                                <input type="number" value="{{ product.stock }}" min="0" class="input-stock">
+                                <button type="button" class="btn-update-stock">Update</button>
+                            </div>
+                        </td>
+                        <td class="text-right">
+                            <button type="button" class="btn-delete"><i class="fa-solid fa-trash"></i> Delete</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>

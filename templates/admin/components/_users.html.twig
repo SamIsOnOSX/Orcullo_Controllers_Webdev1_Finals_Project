@@ -1,0 +1,65 @@
+<div class="dashboard-card table-responsive">
+    <div class="card-header-bar">
+        <h3><i class="fa-solid fa-users card-icon"></i>Manage Users ({{ users|length }})</h3>
+    </div>
+    <table class="order-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in users %}
+                <tr>
+                    <td><span class="order-id-tag">#{{ u.id }}</span></td>
+                    <td><input type="text" value="{{ u.username }}" class="input-user-name"></td>
+                    <td><input type="email" value="{{ u.email }}" class="input-user-email"></td>
+                    <td>
+                        <select class="table-select">
+                            <option value="customer" {{ u.role == 'customer' ? 'selected' : '' }}>Customer</option>
+                            <option value="admin" {{ u.role == 'admin' ? 'selected' : '' }}>Admin</option>
+                        </select>
+                    </td>
+                    <td><button type="button" class="btn-save-user">Save</button></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="dashboard-card">
+    <div class="card-header-bar">
+        <h3><i class="fa-solid fa-key card-icon"></i>Change Customer Passwords</h3>
+    </div>
+    <p class="admin-section-note"><i class="fa-solid fa-circle-info"></i> Reset password for customer accounts.</p>
+    <div class="user-pwd-grid">
+        {% for u in users %}
+            {% if u.role == 'admin' %}
+                <div class="user-pwd-row user-pwd-row--locked">
+                    <div class="user-pwd-identity">
+                        <span class="user-pwd-name">{{ u.username }}</span>
+                        <span class="user-pwd-role-badge admin-pwd-badge"><i class="fa-solid fa-shield-halved"></i> Admin</span>
+                    </div>
+                    <div class="user-pwd-locked-msg"><i class="fa-solid fa-lock"></i> Password protected</div>
+                </div>
+            {% else %}
+                <div class="user-pwd-row">
+                    <div class="user-pwd-identity">
+                        <span class="user-pwd-name">{{ u.username }}</span>
+                        <span class="user-pwd-role-badge customer-pwd-badge"><i class="fa-solid fa-user"></i> Customer</span>
+                    </div>
+                    <div class="user-pwd-form">
+                        <div class="pwd-input-wrap">
+                            <input type="password" placeholder="New password" class="input-new-pwd">
+                        </div>
+                        <button type="button" class="btn-change-pwd"><i class="fa-solid fa-floppy-disk"></i> Set Password</button>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>

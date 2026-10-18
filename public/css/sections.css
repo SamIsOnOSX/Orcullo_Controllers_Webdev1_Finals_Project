@@ -1,0 +1,477 @@
+.site-section {
+    padding: 70px 80px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 30px;
+}
+
+.section-header h2 {
+    font-size: 24px;
+    letter-spacing: 0.04em;
+}
+
+.section-subtitle {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-top: 6px;
+}
+
+.see-all {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.see-all:hover {
+    color: var(--text-light);
+}
+
+/* Category Cards */
+.category-card {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    height: 180px;
+    display: flex;
+    align-items: flex-end;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.category-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures images fill the box without squishing */
+    z-index: 1;
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover .category-img {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+}
+
+.category-label {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    /* Increased top padding stretches the gradient higher up the card */
+    padding: 40px 15px 15px; 
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    color: #ffffff;
+    
+    /* Stronger, darker gradient for maximum text readability */
+    background: linear-gradient(
+        to top, 
+        rgba(0, 0, 0, 0.95) 0%, 
+        rgba(0, 0, 0, 0.7) 45%, 
+        rgba(0, 0, 0, 0) 100%
+    );
+}
+
+/* Product Cards */
+.product-card {
+    background-color: rgba(21, 10, 33, 0.5); /* Frosted glass look over your bright gradient */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: left;
+    transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 14px;
+    background-color: #ffffff; /* White fallback behind transparent PNGs like the Brook Converter */
+}
+
+/* Why Choose Us Split Layout */
+.split-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.showcase-img {
+    width: 100%;
+    height: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 1px solid var(--border-color, #2a1642);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+/* Products */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.product-card {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 16px;
+    transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-3px);
+}
+
+.product-img-placeholder {
+    height: 150px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333333;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 14px;
+}
+
+.product-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.product-card .price {
+    color: #ff9b44;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+/* Why Choose Us */
+.why-us-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+}
+
+.why-us-img-placeholder {
+    height: 320px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.why-us-content h2 {
+    font-size: 26px;
+    margin-bottom: 16px;
+}
+
+.why-us-content > p {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.perks-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.perk-item h4 {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+    color: var(--text-light);
+}
+
+.perk-item p {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.testimonials-section {
+    padding: 100px 80px 120px 80px;
+    text-align: center;
+    /* Electric Pink -> Soft Pink -> Warm Yellow */
+    background: linear-gradient(160deg, #FF3D9A 0%, #FF7A7A 50%, #FFD166 100%);
+}
+
+.testimonials-header {
+    margin-bottom: 50px;
+}
+
+.testimonials-header h2 {
+    font-size: 32px;
+    color: #ffffff;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+    text-shadow: 0px 2px 4px rgba(0,0,0,0.2); /* Helps text pop against the bright background */
+}
+
+.testimonials-header .section-sub {
+    color: #ffffff;
+    font-size: 14px;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+    text-shadow: 0px 1px 3px rgba(0,0,0,0.2);
+}
+
+/* 3-Column Grid for the Cards */
+.card-grid.col-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    width: 100%;
+}
+
+/* Individual Review Card */
+.review-card {
+    background-color: var(--card-bg, #150a21);
+    border: 1px solid var(--border-color, #2a1642);
+    border-radius: 12px;
+    padding: 30px 25px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Card Content */
+.review-card .stars {
+    color: #FFD166; /* Swapped to the Warm Yellow from your palette */
+    font-size: 16px;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+}
+
+.review-card .review-text {
+    font-size: 13px;
+    color: #e0e0e0;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    flex-grow: 1;
+}
+
+.review-card h5 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.review-card .role {
+    font-size: 11px;
+    color: #a0a0a0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+.review-card:hover {
+    transform: translateY(-5px);
+}
+
+.content-section {
+    padding: 80px;
+}
+
+.card-grid.col-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    width: 100%;
+}
+
+/* Card Content */
+.review-card .stars {
+    color: #ff9b44;
+    font-size: 16px;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+}
+
+.review-card .review-text {
+    font-size: 13px;
+    color: var(--text-muted, #a0a0a0);
+    line-height: 1.6;
+    margin-bottom: 24px;
+    flex-grow: 1; /* Automatically pushes the author name to the bottom of the card */
+}
+
+.review-card h5 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.review-card .role {
+    font-size: 11px;
+    color: #666666;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+.testimonials-section h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 40px;
+}
+
+.testimonial-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 28px;
+    text-align: left;
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.stars {
+    color: #ff9b44;
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+.badge {
+    border: 1px solid var(--border-color);
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+}
+
+.testimonial-card p {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 22px;
+}
+
+.testimonial-card h4 {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.testimonial-card small {
+    color: #666666;
+    font-size: 11px;
+}
+
+/* Categories Section Grid Fix */
+.categories-section {
+    /* Deep Purple -> Purple -> Electric Pink */
+    background: linear-gradient(180deg, #6A1B9A 0%, #8E3BB5 50%, #FF3D9A 100%);
+    padding-bottom: 40px !important; 
+}
+
+/* Bottom half of the gradient */
+.buy-now-section {
+    /* Electric Pink -> Soft Pink -> Warm Yellow */
+    background: linear-gradient(180deg, #FF3D9A 0%, #FF7A7A 50%, #FFD166 100%);
+    padding-top: 40px !important; 
+}
+
+/* Ensure the section headers pop against the bright backgrounds */
+.categories-section .section-header h2,
+.buy-now-section .section-header h2 {
+    color: #ffffff;
+    font-size: 28px;
+}
+
+.categories-section .section-sub {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.explore-link {
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: opacity 0.2s ease;
+}
+
+.explore-link:hover {
+    opacity: 0.7;
+}
+
+.categories-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important; /* Forces 4 equal columns */
+    gap: 20px;
+    width: 100%;
+}
+
+.category-card {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    height: 180px;
+}
+
+.category-placeholder {
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    padding: 18px;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    background-color: #1b0c2d;
+    color: #ffffff;
+}
+
+.category-card, 
+.product-card {
+    background-color: rgba(21, 10, 33, 0.6); /* Slightly transparent dark purple */
+    backdrop-filter: blur(10px); /* Creates a frosted glass effect over the gradient */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}

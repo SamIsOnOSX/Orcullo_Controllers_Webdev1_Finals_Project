@@ -1,0 +1,8 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}Products{% endblock %}
+
+{% block admin_content %}
+    {% include 'admin/components/_create_product.html.twig' %}
+    {% include 'admin/components/_inventory.html.twig' %}
+{% endblock %}
