@@ -42,7 +42,7 @@
             <div class="search-bar">
                 <input type="text" placeholder="Search...">
             </div>
-            <a href="#" class="icon-link" title="Cart"><i class="fa-solid fa-cart-shopping"></i></a>
+            <a href="{{ path('cart') }}" class="icon-link" title="Cart"><i class="fa-solid fa-cart-shopping"></i></a>
             
             {% if app.user %}
                 <span style="color: #ff9b44; font-size: 13px; font-weight: 600; margin-right: 6px;">{{ app.user.userIdentifier }}</span>

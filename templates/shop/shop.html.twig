@@ -14,13 +14,78 @@
             <p>High-performance controllers, parts, and accessories.</p>
         </div>
 
-        <div class="product-grid">
+        {% for message in app.flashes('cart_success') %}
+            <div class="shop-alert shop-alert--success"><i class="fa-solid fa-circle-check"></i><span>{{ message }}</span></div>
+        {% endfor %}
+        {% for message in app.flashes('cart_error') %}
+            <div class="shop-alert shop-alert--error"><i class="fa-solid fa-circle-exclamation"></i><span>{{ message }}</span></div>
+        {% endfor %}
+
+        <!-- Shop toolbar: search + cart shortcut with hover mini-cart -->
+        <div class="shop-toolbar">
+            <div class="shop-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="shop_search" placeholder="Search products..." autocomplete="off">
+            </div>
+
+            <div class="shop-cart-wrap">
+                <a href="{{ path('cart') }}" class="shop-cart-shortcut">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>Your Cart</span>
+                    <span class="cart-shortcut-badge">{{ cart_count }}</span>
+                </a>
+
+                {# Mini-cart preview — appears on hover/focus of the cart chip #}
+                <div class="cart-dropdown">
+                    <div class="cart-dropdown-box">
+                        <div class="cart-panel-header">
+                            <h3><i class="fa-solid fa-cart-shopping"></i> Your Cart <span class="cart-panel-count">{{ cart_count }}</span></h3>
+                        </div>
+
+                        {% if cart_items is empty %}
+                            <div class="cart-panel-empty">
+                                <i class="fa-solid fa-basket-shopping empty-icon"></i>
+                                <p class="empty-text">Your cart is empty.</p>
+                                <p class="cart-panel-empty-hint">Add controllers from the catalog.</p>
+                            </div>
+                        {% else %}
+                            <ul class="cart-panel-items">
+                                {% for item in cart_items %}
+                                    <li class="cart-panel-item">
+                                        <div class="cart-panel-thumb">
+                                            {% if item.imagePath %}
+                                                <img src="{{ asset(item.imagePath) }}" alt="{{ item.type }}">
+                                            {% else %}
+                                                <i class="fa-solid fa-gamepad"></i>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <p class="cart-panel-item-name">{{ item.type }}</p>
+                                            <span class="cart-panel-item-meta">Qty {{ item.quantity }} &middot; ${{ (item.price * item.quantity)|number_format(2) }}</span>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                            <div class="cart-panel-subtotal">
+                                <span>Subtotal</span>
+                                <strong>${{ cart_total|number_format(2) }}</strong>
+                            </div>
+                            <a href="{{ path('cart') }}" class="btn-checkout"><i class="fa-solid fa-lock"></i> Checkout</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="product-grid" id="product_grid">
             {% if products is empty %}
                 <div class="shop-empty-state">
                     <i class="fa-solid fa-box-open empty-icon"></i>
                     <h3>No controllers currently in stock</h3>
                     <p>Check back soon or customize your own controller today!</p>
-                    <a href="{{ path('homepage') }}" class="btn btn-primary">Go to Customizer</a>
+                    <a href="{{ path('customize') }}" class="btn btn-primary">Go to Customizer</a>
                 </div>
             {% else %}
                 {% for product in products %}
@@ -52,16 +117,21 @@
                             {% endif %}
 
                             <div class="product-footer">
-                                <div class="product-price">
-                                    <span class="currency">$</span>{{ product.price|number_format(2) }}
+                                <div class="product-price-row">
+                                    <div class="product-price">
+                                        <span class="currency">$</span>{{ product.price|number_format(2) }}
+                                    </div>
+                                    <button type="button" class="btn-wishlist" title="Wishlist coming soon" aria-label="Add {{ product.name }} to wishlist">
+                                        <i class="far fa-heart"></i>
+                                    </button>
                                 </div>
 
-                                {# Backend not wired yet — stub form, same pattern as the admin pages. #}
-                                <form onsubmit="return false;" class="product-form">
+                                <form action="{{ path('cart_add') }}" method="POST" class="product-form">
                                     <input type="hidden" name="product_id" value="{{ product.id }}">
                                     <input type="hidden" name="type" value="{{ product.name }}">
                                     <input type="hidden" name="price" value="{{ product.price }}">
                                     <input type="hidden" name="button_color" value="Standard">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('add_to_cart') }}">
 
                                     <div class="product-action-row">
                                         <div class="quantity-control">
@@ -75,7 +145,7 @@
                                                    class="input-product-qty"
                                                    {{ is_out_of_stock ? 'disabled' : '' }}>
                                         </div>
-                                        <button type="button" class="add-to-cart-btn" {{ is_out_of_stock ? 'disabled' : '' }}>
+                                        <button type="submit" name="add_to_cart" value="1" class="add-to-cart-btn" {{ is_out_of_stock ? 'disabled' : '' }}>
                                             <i class="fa-solid fa-cart-plus"></i> {{ is_out_of_stock ? 'Sold Out' : 'Add to Cart' }}
                                         </button>
                                     </div>
@@ -88,4 +158,18 @@
         </div>
     </main>
 </div>
+
+{# Client-side product name filter — frontend only, no backend needed. #}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var search = document.getElementById('shop_search');
+        if (!search) { return; }
+        search.addEventListener('input', function () {
+            var query = search.value.trim().toLowerCase();
+            document.querySelectorAll('#product_grid .product-card').forEach(function (card) {
+                card.classList.toggle('cart-hidden', query !== '' && !card.textContent.toLowerCase().includes(query));
+            });
+        });
+    });
+</script>
 {% endblock %}

@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Your Cart | Orcullo Custom Controllers{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/cart.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="cart-page-wrapper">
+    <main class="cart-container">
+        <h2 class="cart-title">Your Shopping Cart</h2>
+
+        {% for message in app.flashes('cart_error') %}
+            <div class="cart-alert-error">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('cart_success') %}
+            <div class="cart-alert-success">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+
+        {% if cart_items is empty %}
+            <p class="cart-empty-text">Your cart is currently empty. <a href="{{ path('shop') }}" class="cart-link">Browse the shop</a> or <a href="{{ path('customize') }}" class="cart-link">build a custom controller</a>.</p>
+        {% else %}
+            <table class="cart-table">
+                <tr class="cart-table-header">
+                    <th>Item Configuration</th>
+                    <th>Price</th>
+                    <th class="th-center">Quantity</th>
+                    <th>Total</th>
+                    <th class="th-center">Action</th>
+                </tr>
+
+                {% for item in cart_items %}
+                    {% set qty = item.quantity|default(1) %}
+                    <tr class="cart-table-row">
+                        <td>
+                            <div class="cart-item-cell">
+                                <div class="cart-item-thumb">
+                                    {% if item.imagePath %}
+                                        <img src="{{ asset(item.imagePath) }}" alt="{{ item.type }}">
+                                    {% else %}
+                                        <i class="fa-solid fa-gamepad"></i>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <strong class="cart-item-name">{{ item.type|replace({'_': ' '}) }}</strong>
+                                    <span class="cart-item-meta">Button Color: {{ item.button_color|capitalize }}</span><br>
+                                    {% if item.artwork_path %}
+                                        <span class="cart-artwork-badge">&#10003; Custom Artwork Attached</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="cart-price">${{ item.price|number_format(2) }}</td>
+                        <td class="cart-qty-col">
+                            {% if item.product_id %}
+                                <form action="{{ path('cart_update') }}" method="POST" class="cart-qty-form">
+                                    <input type="hidden" name="cart_index" value="{{ loop.index0 }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('cart_update') }}">
+                                    <div class="cart-qty-spinner">
+                                        <button type="submit" name="qty_target" value="{{ max(0, qty - 1) }}" class="cart-qty-btn minus-btn" title="Decrease quantity">&minus;</button>
+                                        <input type="number"
+                                               name="quantity"
+                                               value="{{ qty }}"
+                                               min="1"
+                                               max="99"
+                                               class="cart-qty-input"
+                                               onchange="this.form.submit()">
+                                        <button type="submit" name="qty_target" value="{{ qty + 1 }}" class="cart-qty-btn plus-btn" title="Increase quantity">&plus;</button>
+                                    </div>
+                                </form>
+                            {% else %}
+                                <span class="cart-qty-static">{{ qty }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="cart-subtotal">${{ (item.price * qty)|number_format(2) }}</td>
+                        <td class="cart-action-col">
+                            <form action="{{ path('cart_remove') }}" method="POST" class="inline-form">
+                                <input type="hidden" name="cart_index" value="{{ loop.index0 }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('cart_remove') }}">
+                                <button type="submit" class="cart-remove-btn">&#10005; Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <div class="cart-summary">
+                <h3 class="cart-total-amount">Total: ${{ cart_total|number_format(2) }}</h3>
+                {# Checkout page not transferred yet — stub, same pattern as the other unwired actions. #}
+                <button type="button" class="cart-checkout-btn" title="Checkout coming soon">
+                    <i class="fa-solid fa-lock"></i> Proceed to Checkout
+                </button>
+            </div>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}
