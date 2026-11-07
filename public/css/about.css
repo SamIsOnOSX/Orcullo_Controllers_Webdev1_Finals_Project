@@ -1,0 +1,151 @@
+/* Page wrapper consistent with shop and customize background */
+.about-page-wrapper {
+    background: radial-gradient(circle at 50% 20%, #130622 0%, #08030f 55%, #050209 100%);
+    border-top: 1px solid #1f0d33;
+    border-bottom: 1px solid #1f0d33;
+    min-height: calc(100vh - 180px);
+    padding: 60px 20px 100px;
+}
+
+.about-container {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+/* Header */
+.about-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.about-header h1 {
+    font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+    margin: 0;
+}
+
+/* Primary Content Card - Cohesive Glassmorphic Illumination */
+.about-main-card {
+    background: rgba(30, 15, 48, 0.72);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 65, 161, 0.22);
+    border-radius: 18px;
+    padding: 42px 46px;
+    margin-bottom: 36px;
+    box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.55),
+        0 0 35px rgba(255, 65, 161, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.about-section-block h3 {
+    font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    letter-spacing: 0.01em;
+}
+
+.about-section-block h3 .card-icon {
+    color: #ff9b44;
+    font-size: 1.15rem;
+}
+
+.about-section-block p {
+    color: #e2daf0;
+    font-size: 1rem;
+    line-height: 1.75;
+    margin: 0;
+}
+
+.about-divider {
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255, 65, 161, 0.4), rgba(255, 155, 68, 0.25), transparent);
+    margin: 30px 0;
+}
+
+/* Feature Grid Cards - Matching Lighting & Depth */
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.about-grid-card {
+    background: rgba(30, 15, 48, 0.72);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 65, 161, 0.22);
+    border-radius: 16px;
+    padding: 32px 26px;
+    text-align: left;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 
+        0 16px 36px rgba(0, 0, 0, 0.45),
+        0 0 25px rgba(255, 65, 161, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.about-grid-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 65, 161, 0.45);
+    box-shadow: 
+        0 22px 48px rgba(0, 0, 0, 0.6),
+        0 0 35px rgba(255, 65, 161, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.grid-card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255, 65, 161, 0.25), rgba(255, 155, 68, 0.25));
+    border: 1px solid rgba(255, 65, 161, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff9b44;
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.about-grid-card h4 {
+    font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.about-grid-card p {
+    color: #d6cee3;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 850px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .about-main-card {
+        padding: 30px 24px;
+    }
+
+    .about-header h1 {
+        font-size: 2rem;
+    }
+}

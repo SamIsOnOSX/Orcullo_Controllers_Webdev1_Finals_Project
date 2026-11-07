@@ -1,0 +1,260 @@
+/* Page wrapper with a rich dark backdrop */
+.customize-page-wrapper {
+    background: radial-gradient(circle at 50% 20%, #130622 0%, #08030f 55%, #050209 100%);
+    border-top: 1px solid #1f0d33;
+    border-bottom: 1px solid #1f0d33;
+    min-height: calc(100vh - 180px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px 90px;
+}
+
+.customize-container {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+/* Header */
+.customize-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.customize-header h1 {
+    font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+    font-size: 2.3rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+}
+
+.customize-header p {
+    color: var(--text-muted, #a0a0a0);
+    font-size: 0.98rem;
+    line-height: 1.5;
+}
+
+/* Deep Obsidian Glass Card with High-Contrast Neon Glow */
+.customizer-card {
+    background: rgba(10, 4, 18, 0.88);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 65, 161, 0.22);
+    border-radius: 18px;
+    padding: 42px 40px;
+    box-shadow: 
+        0 25px 60px rgba(0, 0, 0, 0.7),
+        0 0 45px rgba(255, 65, 161, 0.1),
+        0 0 80px rgba(106, 27, 154, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    position: relative;
+}
+
+/* Input Groups & Labels */
+.customizer-form .input-group {
+    margin-bottom: 26px;
+}
+
+.customizer-form label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #ffffff;
+    margin-bottom: 9px;
+    letter-spacing: 0.02em;
+}
+
+.input-icon {
+    color: #ff9b44;
+    font-size: 0.9rem;
+}
+
+.optional-tag {
+    color: var(--text-muted, #a0a0a0);
+    font-size: 0.8rem;
+    font-weight: 400;
+}
+
+.input-hint {
+    display: block;
+    font-size: 0.82rem;
+    color: #887a99;
+    margin-top: 6px;
+    line-height: 1.4;
+}
+
+/* Form Controls */
+.customizer-form select {
+    width: 100%;
+    padding: 14px 18px;
+    background-color: #07030c;
+    border: 1px solid #2e1548;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 0.96rem;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff9b44' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.customizer-form select:focus {
+    background-color: #0c0515;
+    border-color: #ff41a1;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 0 3px rgba(255, 65, 161, 0.25), 0 0 16px rgba(255, 65, 161, 0.2);
+}
+
+.customizer-form select option {
+    background-color: #0d0617;
+    color: #ffffff;
+    padding: 12px;
+}
+
+/* File Upload Field */
+.file-upload-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.customizer-form input[type="file"] {
+    width: 100%;
+    padding: 13px 16px;
+    background-color: #07030c;
+    border: 1px dashed #3a1c59;
+    border-radius: 12px;
+    color: #a0a0a0;
+    font-size: 0.9rem;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.customizer-form input[type="file"]:hover {
+    border-color: #ff41a1;
+    background-color: #0e0517;
+}
+
+.customizer-form input[type="file"]:focus {
+    border-color: #ff41a1;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 0 3px rgba(255, 65, 161, 0.25);
+}
+
+/* Custom file input pseudo elements */
+.customizer-form input[type="file"]::file-selector-button {
+    padding: 6px 14px;
+    margin-right: 14px;
+    background: linear-gradient(90deg, rgba(255, 65, 161, 0.2), rgba(255, 155, 68, 0.2));
+    border: 1px solid rgba(255, 65, 161, 0.4);
+    border-radius: 6px;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.customizer-form input[type="file"]::file-selector-button:hover {
+    background: linear-gradient(90deg, rgba(255, 65, 161, 0.4), rgba(255, 155, 68, 0.4));
+}
+
+/* Success Message Box */
+.success-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(6, 78, 59, 0.5);
+    border: 1px solid #10b981;
+    color: #a7f3d0;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.success-box i {
+    font-size: 1.15rem;
+    color: #34d399;
+}
+
+.success-box a {
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: underline;
+    margin-left: 6px;
+}
+
+.success-box a:hover {
+    color: #ff9b44;
+}
+
+.error-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(127, 29, 29, 0.5);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.error-box i {
+    font-size: 1.15rem;
+    color: #f87171;
+}
+
+/* Primary Action Button */
+.btn-submit-custom {
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px 24px;
+    background: var(--gradient-primary, linear-gradient(90deg, #ff41a1, #ff9b44));
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.98rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-submit-custom:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
+    box-shadow: 0 8px 24px rgba(255, 65, 161, 0.45);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .customizer-card {
+        padding: 26px 18px;
+    }
+
+    .customize-header h1 {
+        font-size: 1.8rem;
+    }
+}

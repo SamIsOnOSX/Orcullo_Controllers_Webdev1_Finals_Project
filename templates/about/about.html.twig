@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}About | Orcullo Custom Controllers{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/about.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="about-page-wrapper">
+    <main class="about-container">
+        <div class="about-header">
+            <h1>About Us</h1>
+        </div>
+
+        <div class="about-main-card">
+            <div class="about-section-block">
+                <h3><i class="fa-solid fa-bullseye card-icon"></i> Our Mission</h3>
+                <p>
+                    At Orcullo Custom Controllers, we are dedicated to giving gamers and enthusiasts absolute control over their hardware. We believe that a controller should be an extension of your unique playstyle and personality&mdash;not just an off-the-shelf accessory.
+                </p>
+            </div>
+
+            <div class="about-divider"></div>
+
+            <div class="about-section-block">
+                <h3><i class="fa-solid fa-microchip card-icon"></i> Crafted for Precision</h3>
+                <p>
+                    Whether you are ordering from our curated shop or configuring a custom build from scratch using our customizer, every piece is built with performance, tournament-grade ergonomics, and striking aesthetics in mind.
+                </p>
+            </div>
+        </div>
+
+        <div class="about-grid">
+            <div class="about-grid-card">
+                <div class="grid-card-icon">
+                    <i class="fa-solid fa-sliders"></i>
+                </div>
+                <h4>Fully Customized</h4>
+                <p>Tailor your button layouts, color schemes, and custom artwork to create your signature controller.</p>
+            </div>
+
+            <div class="about-grid-card">
+                <div class="grid-card-icon">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <h4>Zero-Latency Input</h4>
+                <p>Responsive switches and premium microcontrollers engineered for competitive fighting games.</p>
+            </div>
+
+            <div class="about-grid-card">
+                <div class="grid-card-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h4>Built to Endure</h4>
+                <p>Heavy-duty enclosures, premium Sanwa-style components, and reinforced cabling built for the long haul.</p>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

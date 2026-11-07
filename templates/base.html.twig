@@ -30,8 +30,8 @@
         <nav class="main-nav">
             <a href="{{ path('homepage') }}">Home</a>
             <a href="{{ path('shop') }}">Shop</a>
-            <a href="#">Customize</a>
-            <a href="#">About</a>
+            <a href="{{ path('customize') }}">Customize</a>
+            <a href="{{ path('about') }}">About</a>
             
             {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('admin_dashboard') }}">Admin Panel</a>
