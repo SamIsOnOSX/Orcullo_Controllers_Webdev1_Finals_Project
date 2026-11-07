@@ -2,45 +2,76 @@
 
 {% block title %}{% block admin_title %}Admin Control Center{% endblock %} | Orcullo Custom Controllers{% endblock %}
 
+{# Admin pages render their own full-screen app shell; the storefront chrome is hidden on this section. #}
+{% block site_header %}{% endblock %}
+{% block site_footer %}{% endblock %}
+
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
 {% endblock %}
 
 {% block body %}
-<div class="dashboard-page-wrapper">
-    <main class="dashboard-container">
-        <!-- Dashboard Header -->
-        <div class="dashboard-header">
-            <h1>Admin <span class="username-highlight">Control Center</span></h1>
-            <p>Manage product catalog, stock inventory, user accounts, and platform orders.</p>
-        </div>
+<div class="admin-shell">
+    <!-- Fixed Sidebar -->
+    <aside class="admin-sidebar">
+        <a href="{{ path('homepage') }}" class="admin-sidebar-brand">
+            <img src="{{ asset('Assets/TextOnly.png') }}" alt="Orcullo Custom Controllers">
+        </a>
 
-        <div class="admin-layout">
-            <!-- Sidebar Navigation -->
-            <aside class="admin-sidebar-nav">
-                <a href="{{ path('admin_dashboard') }}" class="admin-nav-item {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}">
-                    <i class="fa-solid fa-chart-pie"></i>
-                    <span>Overview</span>
-                </a>
-                <a href="{{ path('admin_products') }}" class="admin-nav-item {{ app.request.attributes.get('_route') == 'admin_products' ? 'active' : '' }}">
-                    <i class="fa-solid fa-boxes-stacked"></i>
-                    <span>Products</span>
-                </a>
-                <a href="{{ path('admin_users') }}" class="admin-nav-item {{ app.request.attributes.get('_route') == 'admin_users' ? 'active' : '' }}">
-                    <i class="fa-solid fa-users"></i>
-                    <span>Users</span>
-                </a>
-                <a href="{{ path('admin_orders') }}" class="admin-nav-item {{ app.request.attributes.get('_route') == 'admin_orders' ? 'active' : '' }}">
-                    <i class="fa-solid fa-receipt"></i>
-                    <span>Orders</span>
-                </a>
-            </aside>
+        <span class="admin-sidebar-label">Admin Menu</span>
+        <nav class="admin-sidebar-nav">
+            <a href="{{ path('admin_dashboard') }}" class="admin-nav-item {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Overview</span>
+            </a>
+            <a href="{{ path('admin_products') }}" class="admin-nav-item {{ app.request.attributes.get('_route') == 'admin_products' ? 'active' : '' }}">
+                <i class="fa-solid fa-boxes-stacked"></i>
+                <span>Products</span>
+            </a>
+            <a href="{{ path('admin_users') }}" class="admin-nav-item {{ app.request.attributes.get('_route') == 'admin_users' ? 'active' : '' }}">
+                <i class="fa-solid fa-users"></i>
+                <span>Users</span>
+            </a>
+            <a href="{{ path('admin_orders') }}" class="admin-nav-item {{ app.request.attributes.get('_route') == 'admin_orders' ? 'active' : '' }}">
+                <i class="fa-solid fa-receipt"></i>
+                <span>Orders</span>
+            </a>
+        </nav>
 
-            <!-- Admin Subpage Content -->
-            <section class="admin-content-area">
-                {% block admin_content %}{% endblock %}
-            </section>
+        <div class="admin-sidebar-footer">
+            <span class="admin-sidebar-label">Storefront</span>
+            <a href="{{ path('homepage') }}" class="admin-nav-item">
+                <i class="fa-solid fa-store"></i>
+                <span>View Store</span>
+            </a>
         </div>
-    </main>
+    </aside>
+
+    <!-- Main Area -->
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <div class="admin-topbar-heading">
+                <span class="admin-breadcrumb">
+                    <a href="{{ path('admin_dashboard') }}">Admin</a>
+                    <i class="fa-solid fa-angle-right"></i>
+                    <span>{{ block('admin_title') }}</span>
+                </span>
+                <h1 class="admin-page-title">{{ block('admin_title') }}</h1>
+            </div>
+            <div class="admin-topbar-actions">
+                <span class="admin-user-chip" title="{{ app.user ? app.user.userIdentifier : 'Admin' }}">
+                    <span class="admin-user-avatar">{{ app.user ? app.user.userIdentifier|first|upper : 'A' }}</span>
+                    <span class="admin-user-name">{{ app.user ? app.user.userIdentifier : 'Admin' }}</span>
+                </span>
+                <a href="{{ path('app_logout') }}" class="admin-topbar-icon" title="Log out">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </a>
+            </div>
+        </header>
+
+        <main class="admin-content-area">
+            {% block admin_content %}{% endblock %}
+        </main>
+    </div>
 </div>
 {% endblock %}

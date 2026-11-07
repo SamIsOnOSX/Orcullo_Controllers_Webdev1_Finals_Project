@@ -23,12 +23,17 @@ class AdminController extends AbstractController
         $products = $this->mockDataService->getProducts();
         $users = $this->mockDataService->getUsers();
         $orders = $this->mockDataService->getOrders();
+        $ordersByStatus = $this->countOrdersByStatus($orders);
 
         return $this->render('admin/dashboard.html.twig', [
             'total_products' => count($products),
             'total_users' => count($users),
             'total_orders' => count($orders),
             'recent_orders' => array_slice($orders, 0, 5),
+            'total_revenue' => array_sum(array_column($orders, 'totalAmount')),
+            'orders_by_status' => $ordersByStatus,
+            'status_max_count' => $ordersByStatus === [] ? 0 : max(array_column($ordersByStatus, 'count')),
+            'low_stock_products' => $this->getLowStockProducts($products),
         ]);
     }
 
@@ -54,5 +59,43 @@ class AdminController extends AbstractController
         return $this->render('admin/orders.html.twig', [
             'orders' => $this->mockDataService->getOrders(),
         ]);
+    }
+
+    /**
+     * Groups orders by status for the dashboard chart.
+     *
+     * @param array<int, array<string, mixed>> $orders
+     * @return list<array{status: string, count: int}>
+     */
+    private function countOrdersByStatus(array $orders): array
+    {
+        $counts = [];
+        foreach ($orders as $order) {
+            $status = strtolower((string) ($order['status'] ?? 'unknown'));
+            $counts[$status] = ($counts[$status] ?? 0) + 1;
+        }
+
+        arsort($counts);
+
+        $rows = [];
+        foreach ($counts as $status => $count) {
+            $rows[] = ['status' => $status, 'count' => $count];
+        }
+
+        return $rows;
+    }
+
+    /**
+     * Products at or below the low-stock threshold (out of stock included).
+     *
+     * @param array<int, array<string, mixed>> $products
+     * @return list<array<string, mixed>>
+     */
+    private function getLowStockProducts(array $products, int $threshold = 5): array
+    {
+        return array_values(array_filter(
+            $products,
+            static fn (array $product): bool => (int) ($product['stock'] ?? 0) <= $threshold
+        ));
     }
 }

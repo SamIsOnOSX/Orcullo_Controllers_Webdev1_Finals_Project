@@ -1,7 +1,10 @@
 <div class="dashboard-card table-responsive">
     <h3><i class="fa-solid fa-receipt card-icon"></i>All Platform Orders ({{ orders|length }})</h3>
     {% if orders is empty %}
-        <p class="empty-text">No orders have been placed yet.</p>
+        <div class="empty-state-box">
+            <i class="fa-solid fa-inbox empty-icon"></i>
+            <p class="empty-text">No orders have been placed yet.</p>
+        </div>
     {% else %}
         <table class="order-table">
             <thead>
@@ -18,10 +21,10 @@
             <tbody>
                 {% for order in orders %}
                     <tr>
-                        <td>#{{ order.id }}</td>
+                        <td><span class="order-id-tag">#{{ order.id }}</span></td>
                         <td>{{ order.user ? order.user.username : 'Unknown' }}</td>
                         <td>{{ order.createdAt ? order.createdAt|date('M j, Y') : '-' }}</td>
-                        <td>${{ order.totalAmount|number_format(2) }}</td>
+                        <td><span class="price-cell">${{ order.totalAmount|number_format(2) }}</span></td>
                         <td>
                             {% if order.paymentMethod|lower == 'online' %}
                                 <span class="payment-badge payment-badge--online"><i class="fa-solid fa-qrcode"></i> Online</span>

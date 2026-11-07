@@ -1,7 +1,10 @@
 <div class="dashboard-card table-responsive">
     <h3><i class="fa-solid fa-boxes-stacked card-icon"></i>Inventory & Stock Management ({{ products|length }})</h3>
     {% if products is empty %}
-        <p class="empty-text">No products found in the catalog.</p>
+        <div class="empty-state-box">
+            <i class="fa-solid fa-boxes-stacked empty-icon"></i>
+            <p class="empty-text">No products found in the catalog.</p>
+        </div>
     {% else %}
         <table class="order-table">
             <thead>
@@ -29,7 +32,7 @@
                                 <div class="product-desc-preview" title="{{ product.description }}">{{ product.description }}</div>
                             {% endif %}
                         </td>
-                        <td>${{ product.price|number_format(2) }}</td>
+                        <td><span class="price-cell">${{ product.price|number_format(2) }}</span></td>
                         <td>
                             <div class="stock-form">
                                 <input type="number" value="{{ product.stock }}" min="0" class="input-stock">

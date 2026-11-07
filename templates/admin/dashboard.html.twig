@@ -3,33 +3,92 @@
 {% block admin_title %}Overview{% endblock %}
 
 {% block admin_content %}
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 25px;">
-        <div class="dashboard-card" style="margin-bottom: 0; text-align: center; padding: 24px;">
-            <p style="color: #a0a0a0; margin: 0 0 8px 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">Total Products</p>
-            <h2 style="font-size: 2.2rem; margin: 0; color: #ff9b44;">{{ total_products }}</h2>
+    <!-- Summary Stats -->
+    <div class="stats-grid">
+        <div class="dashboard-card stat-card stat-card--products">
+            <div class="stat-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
+            <div>
+                <p class="stat-label">Total Products</p>
+                <h2 class="stat-value">{{ total_products }}</h2>
+            </div>
         </div>
-        <div class="dashboard-card" style="margin-bottom: 0; text-align: center; padding: 24px;">
-            <p style="color: #a0a0a0; margin: 0 0 8px 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">Registered Users</p>
-            <h2 style="font-size: 2.2rem; margin: 0; color: #c084fc;">{{ total_users }}</h2>
+        <div class="dashboard-card stat-card stat-card--users">
+            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+            <div>
+                <p class="stat-label">Registered Users</p>
+                <h2 class="stat-value">{{ total_users }}</h2>
+            </div>
         </div>
-        <div class="dashboard-card" style="margin-bottom: 0; text-align: center; padding: 24px;">
-            <p style="color: #a0a0a0; margin: 0 0 8px 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">Total Orders</p>
-            <h2 style="font-size: 2.2rem; margin: 0; color: #ff41a1;">{{ total_orders }}</h2>
+        <div class="dashboard-card stat-card stat-card--orders">
+            <div class="stat-icon"><i class="fa-solid fa-receipt"></i></div>
+            <div>
+                <p class="stat-label">Total Orders</p>
+                <h2 class="stat-value">{{ total_orders }}</h2>
+            </div>
+        </div>
+        <div class="dashboard-card stat-card stat-card--revenue">
+            <div class="stat-icon"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+            <div>
+                <p class="stat-label">Total Revenue</p>
+                <h2 class="stat-value">${{ total_revenue|number_format(2) }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Insights & Alerts -->
+    <div class="admin-grid-2">
+        <div class="dashboard-card">
+            <h3><i class="fa-solid fa-chart-simple card-icon"></i>Orders by Status</h3>
+            {% if orders_by_status is empty %}
+                <p class="empty-text">No orders to break down yet.</p>
+            {% else %}
+                {% set max_count = status_max_count %}
+                <div class="mini-chart">
+                    {% for row in orders_by_status %}
+                        <div class="mini-chart-row">
+                            <span class="mini-chart-label">{{ row.status }}</span>
+                            <div class="mini-chart-track">
+                                <div class="mini-chart-bar bar--{{ row.status }}" style="--bar-width: {{ max_count > 0 ? (row.count / max_count * 100)|round ~ '%' : '0%' }};"></div>
+                            </div>
+                            <span class="mini-chart-value">{{ row.count }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="dashboard-card">
+            <h3><i class="fa-solid fa-triangle-exclamation card-icon"></i>Low Stock Alerts</h3>
+            {% if low_stock_products is empty %}
+                <p class="empty-text">All products are well stocked.</p>
+            {% else %}
+                <div class="low-stock-list">
+                    {% for product in low_stock_products %}
+                        <div class="low-stock-item">
+                            <span class="low-stock-name">{{ product.name }}</span>
+                            <span class="status-badge {{ product.stock == 0 ? 'status-badge--out' : 'status-badge--low' }}">
+                                {{ product.stock == 0 ? 'Out of stock' : product.stock ~ ' left' }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
     </div>
 
     <!-- Recent Orders Preview -->
     <div class="dashboard-card table-responsive">
-        <div class="card-header-bar" style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">
-                <i class="fa-solid fa-clock-rotate-left card-icon"></i>Recent Orders
-            </h3>
-            <a href="{{ path('admin_orders') }}" style="color: #ff9b44; font-size: 0.88rem; text-decoration: none;">View All &gt;</a>
+        <div class="card-header-bar">
+            <h3><i class="fa-solid fa-clock-rotate-left card-icon"></i>Recent Orders</h3>
+            <a href="{{ path('admin_orders') }}" class="card-link">View All <i class="fa-solid fa-angle-right"></i></a>
         </div>
         {% if recent_orders is empty %}
-            <p class="empty-text">No recent orders placed yet.</p>
+            <div class="empty-state-box">
+                <i class="fa-solid fa-clock-rotate-left empty-icon"></i>
+                <p class="empty-text">No recent orders placed yet.</p>
+            </div>
         {% else %}
-            <table class="order-table" style="margin-top: 15px;">
+            <table class="order-table">
                 <thead>
                     <tr>
                         <th>Order ID</th>
@@ -42,11 +101,11 @@
                 <tbody>
                     {% for order in recent_orders %}
                         <tr>
-                            <td>#{{ order.id }}</td>
+                            <td><span class="order-id-tag">#{{ order.id }}</span></td>
                             <td>{{ order.user ? order.user.username : 'Unknown' }}</td>
                             <td>{{ order.createdAt ? order.createdAt|date('M j, Y') : '-' }}</td>
-                            <td>${{ order.totalAmount|number_format(2) }}</td>
-                            <td><span style="text-transform: capitalize; color: #ff9b44;">{{ order.status }}</span></td>
+                            <td><span class="price-cell">${{ order.totalAmount|number_format(2) }}</span></td>
+                            <td><span class="status-badge status-{{ order.status|lower }}">{{ order.status }}</span></td>
                         </tr>
                     {% endfor %}
                 </tbody>

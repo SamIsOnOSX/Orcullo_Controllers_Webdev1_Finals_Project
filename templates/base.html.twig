@@ -18,6 +18,7 @@
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
+    {% block site_header %}
     <header class="main-header">
         <div class="logo">
             <a href="{{ path('homepage') }}" class="header-logo">
@@ -51,9 +52,11 @@
             {% endif %}
         </div>
     </header>
+    {% endblock %}
 
     {% block body %}{% endblock %}
 
+    {% block site_footer %}
     <footer class="main-footer">
         <div class="footer-container">
             <div class="footer-column brand-column">
@@ -92,6 +95,7 @@
             <p>&copy; 2026 ALL RIGHTS RESERVED FOR ORCULLO CUSTOM CONTROLLERS.</p>
         </div>
     </footer>
+    {% endblock %}
     {% block javascripts %}{% endblock %}
 </body>
 </html>
