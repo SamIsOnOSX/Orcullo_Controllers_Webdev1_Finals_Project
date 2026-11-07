@@ -7,6 +7,7 @@
     display: flex;
     min-height: 100vh;
     background: radial-gradient(circle at 50% 20%, #130622 0%, #08030f 55%, #050209 100%);
+    -webkit-tap-highlight-color: transparent; /* no yellow/blue flash on mobile taps */
 }
 
 .admin-main {
@@ -38,16 +39,23 @@
 }
 
 .admin-sidebar-brand {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     padding: 4px 12px 22px;
     margin-bottom: 24px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.admin-sidebar-brand img {
-    height: 26px;
+.admin-brand-mark {
+    height: 34px;
     width: auto;
-    display: block;
+    flex-shrink: 0;
+}
+
+.admin-brand-text {
+    height: 20px;
+    width: auto;
 }
 
 .admin-sidebar-label {
@@ -1187,7 +1195,7 @@
 }
 
 .admin-nav-item.active {
-    background: var(--gradient-primary);
+    background: #ff41a1;
     color: #ffffff;
     font-weight: 700;
     box-shadow: 0 8px 24px rgba(255, 65, 161, 0.35);

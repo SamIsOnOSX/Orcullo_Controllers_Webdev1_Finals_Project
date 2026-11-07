@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Shop | Orcullo Custom Controllers{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/shop.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="shop-page-wrapper">
+    <main class="shop-container">
+        <div class="shop-header">
+            <h1>Shop</h1>
+            <p>High-performance controllers, parts, and accessories.</p>
+        </div>
+
+        <div class="product-grid">
+            {% if products is empty %}
+                <div class="shop-empty-state">
+                    <i class="fa-solid fa-box-open empty-icon"></i>
+                    <h3>No controllers currently in stock</h3>
+                    <p>Check back soon or customize your own controller today!</p>
+                    <a href="{{ path('homepage') }}" class="btn btn-primary">Go to Customizer</a>
+                </div>
+            {% else %}
+                {% for product in products %}
+                    {% set stock = product.stock|default(0) %}
+                    {% set is_out_of_stock = stock <= 0 %}
+                    <div class="product-card {{ is_out_of_stock ? 'out-of-stock' : '' }}">
+                        <div class="product-img-wrapper">
+                            {% if product.imagePath %}
+                                <img src="{{ asset(product.imagePath) }}" alt="{{ product.name }}" class="product-img">
+                            {% else %}
+                                <div class="product-img-placeholder">
+                                    <i class="fa-solid fa-gamepad"></i>
+                                </div>
+                            {% endif %}
+
+                            {% if is_out_of_stock %}
+                                <span class="badge-stock out">Out of Stock</span>
+                            {% elseif stock <= 3 %}
+                                <span class="badge-stock low">Only {{ stock }} left</span>
+                            {% else %}
+                                <span class="badge-stock in-stock">In Stock</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="product-info">
+                            <h3 class="product-title">{{ product.name }}</h3>
+                            {% if product.description %}
+                                <p class="product-description">{{ product.description }}</p>
+                            {% endif %}
+
+                            <div class="product-footer">
+                                <div class="product-price">
+                                    <span class="currency">$</span>{{ product.price|number_format(2) }}
+                                </div>
+
+                                {# Backend not wired yet — stub form, same pattern as the admin pages. #}
+                                <form onsubmit="return false;" class="product-form">
+                                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                                    <input type="hidden" name="type" value="{{ product.name }}">
+                                    <input type="hidden" name="price" value="{{ product.price }}">
+                                    <input type="hidden" name="button_color" value="Standard">
+
+                                    <div class="product-action-row">
+                                        <div class="quantity-control">
+                                            <label for="qty-{{ product.id }}" class="sr-only">Quantity</label>
+                                            <input type="number"
+                                                   id="qty-{{ product.id }}"
+                                                   name="quantity"
+                                                   value="1"
+                                                   min="1"
+                                                   max="{{ max(1, stock) }}"
+                                                   class="input-product-qty"
+                                                   {{ is_out_of_stock ? 'disabled' : '' }}>
+                                        </div>
+                                        <button type="button" class="add-to-cart-btn" {{ is_out_of_stock ? 'disabled' : '' }}>
+                                            <i class="fa-solid fa-cart-plus"></i> {{ is_out_of_stock ? 'Sold Out' : 'Add to Cart' }}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </main>
+</div>
+{% endblock %}
