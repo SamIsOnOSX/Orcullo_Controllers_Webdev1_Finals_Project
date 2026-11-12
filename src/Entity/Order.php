@@ -13,6 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: 'orders')]
+#[ORM\Index(name: 'idx_orders_created_at', columns: ['created_at'])]
+#[ORM\Index(name: 'idx_orders_status', columns: ['status'])]
 class Order
 {
     public const STATUS_PENDING = 'pending';
@@ -38,7 +40,7 @@ class Order
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\Column(name: 'total_amount', type: 'decimal', precision: 10, scale: 2, options: ['default' => '0.00'])]

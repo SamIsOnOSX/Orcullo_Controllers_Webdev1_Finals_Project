@@ -31,6 +31,12 @@ final class AdminController extends AbstractController
 
     private const ALLOWED_IMAGE_MIMES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
+    private const MAX_PROOF_BYTES = 5 * 1024 * 1024; // 5 MB
+
+    private const ALLOWED_PROOF_EXTS = ['jpg', 'jpeg', 'png', 'webp', 'pdf'];
+
+    private const ALLOWED_PROOF_MIMES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+
     public function __construct(
         private readonly ProductRepository $productRepository,
         private readonly UserRepository $userRepository,
@@ -223,6 +229,58 @@ final class AdminController extends AbstractController
         return $this->redirectToRoute('admin_orders');
     }
 
+    /**
+     * Attaches or replaces the proof-of-payment file of an order
+     * (new admin feature: COD receipts + replacing online payment proofs).
+     */
+    #[Route('/orders/proof', name: 'admin_order_proof', methods: ['POST'])]
+    public function updateOrderProof(Request $request): RedirectResponse
+    {
+        $orderId = (int) $request->request->get('order_id', 0);
+
+        if (!$this->isCsrfTokenValid('admin_order_proof', (string) $request->request->get('_token'))) {
+            $error = 'Your session expired. Please try again.';
+        } elseif ($orderId <= 0) {
+            $error = 'Invalid order ID.';
+        } else {
+            $order = $this->orderRepository->find($orderId);
+            $error = $order === null ? "Order #$orderId not found." : null;
+
+            if ($error === null) {
+                /** @var UploadedFile|null $file */
+                $file = $request->files->get('payment_proof');
+
+                if ($file === null || !$file->isValid()) {
+                    $error = 'Please choose a proof of payment file to upload.';
+                } else {
+                    $error = $this->validateProofFile($file);
+
+                    if ($error === null) {
+                        $oldProof = $order->getPaymentProof();
+
+                        $order->setPaymentProof($this->storeProofFile($file));
+                        $this->entityManager->flush();
+
+                        // Free the replaced file once no other order still uses it.
+                        if ($oldProof !== null && $this->orderRepository->count(['paymentProof' => $oldProof]) === 0) {
+                            @unlink($this->getParameter('kernel.project_dir') . '/public/' . $oldProof);
+                        }
+
+                        $this->addFlash('admin_message', $oldProof !== null
+                            ? "Proof of payment updated for order #$orderId."
+                            : "Proof of payment attached to order #$orderId.");
+
+                        return $this->redirectToRoute('admin_orders');
+                    }
+                }
+            }
+        }
+
+        $this->addFlash('admin_error', $error);
+
+        return $this->redirectToRoute('admin_orders');
+    }
+
     #[Route('/users/password', name: 'admin_change_password', methods: ['POST'])]
     public function changeUserPassword(Request $request): RedirectResponse
     {
@@ -341,6 +399,47 @@ final class AdminController extends AbstractController
         $imagePath = 'uploads/' . $safeName;
 
         return null;
+    }
+
+    /**
+     * Validates a proof-of-payment upload (same rules as checkout).
+     * Returns an error message or null when the file is acceptable.
+     */
+    private function validateProofFile(UploadedFile $file): ?string
+    {
+        $extension = strtolower($file->getClientOriginalExtension());
+        if (!in_array($extension, self::ALLOWED_PROOF_EXTS, true)) {
+            return 'Invalid file type. Allowed formats: JPG, PNG, WEBP, PDF.';
+        }
+
+        if (!in_array($file->getMimeType(), self::ALLOWED_PROOF_MIMES, true)) {
+            return 'Uploaded file is not a valid image or PDF.';
+        }
+
+        if ($file->getSize() > self::MAX_PROOF_BYTES) {
+            return 'Proof of payment file must be under 5 MB.';
+        }
+
+        return null;
+    }
+
+    /**
+     * Stores a proof-of-payment upload under public/uploads/payment_proofs/
+     * (same naming scheme as checkout) and returns the relative path.
+     */
+    private function storeProofFile(UploadedFile $file): string
+    {
+        $extension = strtolower($file->getClientOriginalExtension());
+        $safeName = time() . '_' . preg_replace('/[^a-zA-Z0-9_-]/', '_', (string) pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $extension;
+
+        $directory = $this->getParameter('kernel.project_dir') . '/public/uploads/payment_proofs';
+        if (!is_dir($directory)) {
+            @mkdir($directory, 0775, true);
+        }
+
+        $file->move($directory, $safeName);
+
+        return 'uploads/payment_proofs/' . $safeName;
     }
 
     /**
