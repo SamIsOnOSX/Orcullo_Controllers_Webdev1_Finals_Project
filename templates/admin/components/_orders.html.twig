@@ -35,24 +35,37 @@
                         </td>
                         <td class="proof-cell">
                             {% if order.paymentProof %}
-                                <a href="{{ asset(order.paymentProof) }}" target="_blank" class="proof-link proof-link--img">
+                                <a href="{{ asset(order.paymentProof) }}" target="_blank" class="proof-link proof-link--img" title="Click to view full proof">
                                     {% if order.paymentProof|lower ends with '.pdf' %}
-                                        <span><i class="fa-solid fa-file-pdf"></i> View PDF</span>
+                                        <div class="proof-pdf-box">
+                                            <i class="fa-solid fa-file-pdf"></i>
+                                            <span>PDF Document</span>
+                                        </div>
                                     {% else %}
-                                        <img src="{{ asset(order.paymentProof) }}" alt="Payment proof for order #{{ order.id }}" class="proof-thumbnail">
-                                        <span>View</span>
+                                        <div class="proof-thumb-wrapper">
+                                            <img src="{{ asset(order.paymentProof) }}" alt="Payment proof for order #{{ order.id }}" class="proof-thumbnail">
+                                            <span class="proof-hover-overlay"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+                                        </div>
                                     {% endif %}
                                 </a>
                             {% else %}
-                                <span class="proof-none">&mdash;</span>
+                                <span class="proof-none" title="No payment proof uploaded">
+                                    <i class="fa-solid fa-circle-minus"></i>
+                                    <span>None</span>
+                                </span>
                             {% endif %}
-                            {# Admin feature: attach (COD) or replace (online) the proof of payment file. #}
+                            
+                            {# Admin feature: attach (COD) or replace (online) the proof of payment file #}
                             <form method="POST" action="{{ path('admin_order_proof') }}" enctype="multipart/form-data" class="proof-upload-form">
                                 <input type="hidden" name="_token" value="{{ csrf_token('admin_order_proof') }}">
                                 <input type="hidden" name="order_id" value="{{ order.id }}">
-                                <input type="file" name="payment_proof" accept=".jpg,.jpeg,.png,.webp,.pdf" class="proof-upload-input" required>
-                                <button type="submit" name="upload_proof" class="btn-proof-upload" title="Attach or replace the proof of payment file">
-                                    <i class="fa-solid fa-upload"></i> {{ order.paymentProof ? 'Replace' : 'Attach' }}
+                                <label class="proof-file-label" title="Choose file">
+                                    <i class="fa-solid fa-paperclip"></i>
+                                    <span class="proof-file-text">Choose file</span>
+                                    <input type="file" name="payment_proof" accept=".jpg,.jpeg,.png,.webp,.pdf" class="proof-upload-input" required onchange="this.previousElementSibling.textContent = this.files[0] ? this.files[0].name : 'Choose file'; this.closest('form').querySelector('.btn-proof-upload').classList.add('ready');">
+                                </label>
+                                <button type="submit" name="upload_proof" class="btn-proof-upload" title="Upload and save proof">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> {{ order.paymentProof ? 'Replace' : 'Upload' }}
                                 </button>
                             </form>
                         </td>

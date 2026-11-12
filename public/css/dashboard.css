@@ -1112,53 +1112,103 @@
 /* ── Proof of Payment Cell ── */
 .proof-cell {
     text-align: center;
+    min-width: 170px;
 }
 
 .proof-none {
-    color: #555;
-    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #64748b;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+}
+
+.proof-none i {
+    font-size: 0.75rem;
+    color: #475569;
 }
 
 .proof-link {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    font-size: 0.8rem;
-    font-weight: 600;
+    justify-content: center;
     text-decoration: none;
-    transition: opacity 0.2s;
+    transition: transform 0.2s ease;
 }
 
 .proof-link:hover {
-    opacity: 0.8;
+    transform: translateY(-1px);
 }
 
-.proof-link--pdf {
-    color: #f87171;
-}
-
-.proof-link--pdf i {
-    font-size: 1.1rem;
-}
-
-.proof-link--img {
-    flex-direction: column;
-    color: #a5b4fc;
-    gap: 3px;
+.proof-thumb-wrapper {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: #0d0617;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    margin: 0 auto;
 }
 
 .proof-thumbnail {
-    width: 52px;
-    height: 52px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
     display: block;
-    transition: transform 0.2s;
+    transition: transform 0.3s ease;
 }
 
-.proof-link--img:hover .proof-thumbnail {
-    transform: scale(1.08);
+.proof-hover-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(13, 6, 23, 0.75);
+    color: #ff9b44;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.proof-link:hover .proof-thumbnail {
+    transform: scale(1.1);
+}
+
+.proof-link:hover .proof-hover-overlay {
+    opacity: 1;
+}
+
+.proof-pdf-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 11px;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    border-radius: 8px;
+    color: #fca5a5;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.proof-pdf-box i {
+    font-size: 0.95rem;
+    color: #ef4444;
+}
+
+.proof-link:hover .proof-pdf-box {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.6);
+    color: #ffffff;
 }
 
 /* Sidebar Navigation */
@@ -1269,53 +1319,101 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     margin-top: 8px;
+    width: 100%;
+}
+
+.proof-file-label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 130px;
+    padding: 5px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #94a3b8;
+    font-size: 0.7rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.proof-file-label:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 155, 68, 0.5);
+    color: #f1f5f9;
+}
+
+.proof-file-label i {
+    font-size: 0.72rem;
+    color: #ff9b44;
+    flex-shrink: 0;
+}
+
+.proof-file-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .proof-upload-input {
-    max-width: 150px;
-    font-size: 0.68rem;
-    color: #cbd5e1;
-    cursor: pointer;
-}
-
-.proof-upload-input::file-selector-button {
-    padding: 4px 8px;
-    margin-right: 6px;
-    background: rgba(255, 255, 255, 0.08);
-    color: #e2e8f0;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 6px;
-    font-size: 0.68rem;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.proof-upload-input::file-selector-button:hover {
-    background: rgba(255, 255, 255, 0.15);
+    position: absolute;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
 }
 
 .btn-proof-upload {
-    padding: 5px 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 130px;
+    padding: 5px 10px;
     font-size: 0.7rem;
     font-weight: 700;
-    color: #ff9b44;
+    color: #ffb867;
     background: rgba(255, 155, 68, 0.12);
-    border: 1px solid rgba(255, 155, 68, 0.45);
-    border-radius: 7px;
+    border: 1px solid rgba(255, 155, 68, 0.35);
+    border-radius: 6px;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s, opacity 0.2s;
+    transition: all 0.2s ease;
 }
 
 .btn-proof-upload:hover {
-    background: var(--gradient-primary, linear-gradient(90deg, #ff41a1, #ff9b44));
+    background: rgba(255, 155, 68, 0.25);
+    border-color: #ff9b44;
     color: #ffffff;
-    opacity: 0.95;
+    box-shadow: 0 2px 8px rgba(255, 155, 68, 0.25);
+}
+
+.btn-proof-upload.ready {
+    background: var(--gradient-primary, linear-gradient(90deg, #ff41a1, #ff9b44));
+    border-color: transparent;
+    color: #ffffff;
+    animation: pulseProofBtn 1.5s infinite;
+}
+
+@keyframes pulseProofBtn {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(255, 65, 161, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 4px rgba(255, 65, 161, 0);
+    }
 }
 
 .btn-proof-upload i {
-    font-size: 0.65rem;
+    font-size: 0.72rem;
 }
 
 .order-status-form {
