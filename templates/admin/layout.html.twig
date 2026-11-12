@@ -71,6 +71,15 @@
         </header>
 
         <main class="admin-content-area">
+            {% for flash in ['admin_message', 'admin_error'] %}
+                {% for message in app.flashes(flash) %}
+                    <div class="{{ flash == 'admin_message' ? 'alert-success' : 'alert-error' }}">
+                        <i class="fa-solid {{ flash == 'admin_message' ? 'fa-circle-check' : 'fa-circle-exclamation' }}"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
             {% block admin_content %}{% endblock %}
         </main>
     </div>

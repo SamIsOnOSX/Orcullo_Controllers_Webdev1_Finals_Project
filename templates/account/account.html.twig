@@ -1,0 +1,163 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Account | Orcullo Custom Controllers{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-page-wrapper">
+    <main class="dashboard-container">
+        <div class="dashboard-header">
+            <span class="user-role-badge"><i class="fa-solid fa-user"></i> Customer Dashboard</span>
+            <h1>Welcome, <span class="username-highlight">{{ user.username }}</span></h1>
+            <p>Manage your account credentials and track your custom controller orders.</p>
+        </div>
+
+        {% if message %}
+            <div class="alert-success">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>{{ message }}</span>
+            </div>
+        {% endif %}
+
+        {% if error %}
+            <div class="alert-error">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>{{ error }}</span>
+            </div>
+        {% endif %}
+
+        <!-- Account Info Card -->
+        <div class="dashboard-card">
+            <div class="card-header-bar">
+                <h3><i class="fa-solid fa-user-pen card-icon"></i> Account Information</h3>
+            </div>
+            <form method="POST" action="{{ path('app_account') }}" class="dashboard-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('update_profile') }}">
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label for="user_username"><i class="fa-solid fa-user label-icon"></i> Username</label>
+                        <input type="text" id="user_username" name="username" value="{{ user.username }}" required>
+                    </div>
+
+                    <div class="form-group flex-1">
+                        <label for="user_email"><i class="fa-solid fa-envelope label-icon"></i> Email Address</label>
+                        <input type="email" id="user_email" name="email" value="{{ user.email }}" required>
+                    </div>
+                </div>
+
+                <button type="submit" name="update_profile" class="btn-primary">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                </button>
+            </form>
+        </div>
+
+        <!-- Change Password Card -->
+        <div class="dashboard-card">
+            <div class="card-header-bar">
+                <h3><i class="fa-solid fa-key card-icon"></i> Change Password</h3>
+            </div>
+            <form method="POST" action="{{ path('app_account') }}" class="dashboard-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('change_password') }}">
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label for="current_password"><i class="fa-solid fa-lock label-icon"></i> Current Password</label>
+                        <div class="pwd-input-wrap">
+                            <input type="password" id="current_password" name="current_password" placeholder="Enter current password" required autocomplete="current-password">
+                            <button type="button" class="pwd-toggle-btn" onclick="togglePassword('current_password', this)" aria-label="Toggle password visibility">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label for="new_password"><i class="fa-solid fa-shield-halved label-icon"></i> New Password</label>
+                        <div class="pwd-input-wrap">
+                            <input type="password" id="new_password" name="new_password" placeholder="Minimum 6 characters" required minlength="6" autocomplete="new-password">
+                            <button type="button" class="pwd-toggle-btn" onclick="togglePassword('new_password', this)" aria-label="Toggle password visibility">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label for="confirm_password"><i class="fa-solid fa-check-double label-icon"></i> Confirm New Password</label>
+                        <div class="pwd-input-wrap">
+                            <input type="password" id="confirm_password" name="confirm_password" placeholder="Repeat new password" required minlength="6" autocomplete="new-password">
+                            <button type="button" class="pwd-toggle-btn" onclick="togglePassword('confirm_password', this)" aria-label="Toggle password visibility">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" name="change_password" class="btn-primary">
+                    <i class="fa-solid fa-lock"></i> Update Password
+                </button>
+            </form>
+        </div>
+
+        <!-- Order History Card -->
+        <div class="dashboard-card">
+            <div class="card-header-bar">
+                <h3><i class="fa-solid fa-clock-rotate-left card-icon"></i> Order History</h3>
+            </div>
+            {% if orders is empty %}
+                <div class="empty-state-box">
+                    <i class="fa-solid fa-box-open empty-icon"></i>
+                    <p class="empty-text">You haven't placed any orders yet.</p>
+                    <a href="{{ path('shop') }}" class="btn btn-outline">Explore Controllers</a>
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="order-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date</th>
+                                <th>Total Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                                {% set status = order.status|lower %}
+                                {% set status_class = 'status-pending' %}
+                                {% if status == 'delivered' or status == 'paid' %}
+                                    {% set status_class = 'status-paid' %}
+                                {% elseif status == 'shipped' %}
+                                    {% set status_class = 'status-shipped' %}
+                                {% elseif status == 'processing' %}
+                                    {% set status_class = 'status-processing' %}
+                                {% elseif status == 'cancelled' %}
+                                    {% set status_class = 'status-cancelled' %}
+                                {% endif %}
+                                <tr>
+                                    <td><span class="order-id-tag">#{{ order.id }}</span></td>
+                                    <td>{{ order.createdAt ? order.createdAt|date('M j, Y') }}</td>
+                                    <td class="price-cell">${{ order.totalAmount|number_format(2) }}</td>
+                                    <td><span class="status-badge {{ status_class }}">{{ order.status }}</span></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+</div>
+
+<script>
+function togglePassword(inputId, btn) {
+    var input = document.getElementById(inputId);
+    var icon  = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+</script>
+{% endblock %}

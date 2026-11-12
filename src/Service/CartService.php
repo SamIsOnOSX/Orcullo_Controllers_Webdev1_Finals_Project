@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -15,7 +16,8 @@ final class CartService
     private const SESSION_KEY = 'cart';
 
     public function __construct(
-        private readonly RequestStack $requestStack
+        private readonly RequestStack $requestStack,
+        private readonly ProductRepository $productRepository,
     ) {
     }
 
@@ -108,6 +110,41 @@ final class CartService
         return $error;
     }
 
+    /**
+     * Cart items enriched with the product's image path from the catalog.
+     * Customizer items (no product_id) keep artwork_path for display.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function getDetailedItems(): array
+    {
+        $items = $this->getItems();
+
+        $ids = [];
+        foreach ($items as $item) {
+            $id = $item['product_id'] ?? null;
+            if (is_int($id)) {
+                $ids[] = $id;
+            }
+        }
+
+        $products = [];
+        if ($ids !== []) {
+            foreach ($this->productRepository->findBy(['id' => $ids]) as $product) {
+                $products[$product->getId()] = $product;
+            }
+        }
+
+        return array_map(static function (array $item) use ($products): array {
+            $productId = $item['product_id'] ?? null;
+            $item['imagePath'] = (is_int($productId) && isset($products[$productId]))
+                ? $products[$productId]->getImagePath()
+                : null;
+
+            return $item;
+        }, $items);
+    }
+
     public function removeItem(int $index): void
     {
         $items = (array) $this->session()->get(self::SESSION_KEY, []);
@@ -116,6 +153,12 @@ final class CartService
             unset($items[$index]);
             $this->session()->set(self::SESSION_KEY, array_values($items));
         }
+    }
+
+    /** Empties the cart (legacy cleared $_SESSION['cart'] after checkout). */
+    public function clear(): void
+    {
+        $this->session()->set(self::SESSION_KEY, []);
     }
 
     public function getTotal(): float

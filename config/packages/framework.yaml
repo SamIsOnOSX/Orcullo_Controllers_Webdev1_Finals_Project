@@ -5,6 +5,9 @@ framework:
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 
+    # Needed for the login form, cart/checkout/admin POST tokens.
+    csrf_protection: true
+
     #esi: true
     #fragments: true
 

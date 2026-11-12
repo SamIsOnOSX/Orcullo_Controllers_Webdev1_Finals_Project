@@ -1,0 +1,183 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Checkout | Orcullo Custom Controllers{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/checkout.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="checkout-page-wrapper">
+    <main class="checkout-container">
+        {% if success %}
+            <div class="checkout-card checkout-success-card">
+                <div class="success-icon-badge">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h2>Order Confirmed!</h2>
+                <p>Your order has been securely placed. We're already getting your controllers prepped and assembled.</p>
+                <div class="success-actions">
+                    <a href="{{ path('homepage') }}" class="btn btn-primary">Return to Homepage</a>
+                    <a href="{{ path('shop') }}" class="btn btn-outline">Keep Shopping</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="checkout-header">
+                <h1>Checkout Summary</h1>
+            </div>
+
+            {% if error %}
+                <div class="checkout-error-box">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>{{ error }}</span>
+                </div>
+            {% endif %}
+
+            {# Order Overview #}
+            <div class="checkout-card checkout-summary-card">
+                <div class="checkout-card-header">
+                    <h3><i class="fa-solid fa-receipt"></i> Order Overview</h3>
+                    {% set total_item_count = 0 %}
+                    {% for ci in cart_items %}
+                        {% set total_item_count = total_item_count + max(1, ci.quantity|default(1)) %}
+                    {% endfor %}
+                    <span class="item-count-badge">{{ total_item_count }} Item{{ total_item_count > 1 ? 's' : '' }}</span>
+                </div>
+
+                <div class="checkout-items-preview">
+                    {% for item in cart_items %}
+                        {% set qty = max(1, item.quantity|default(1)) %}
+                        <div class="checkout-item-row">
+                            <div class="item-info">
+                                <span class="item-name">{{ item.type }}</span>
+                                <span class="item-meta">Color: {{ item.button_color|default('Standard') }}{% if qty > 1 %} &bull; Qty: {{ qty }}{% endif %}</span>
+                            </div>
+                            <div class="item-price">
+                                ${{ (item.price * qty)|number_format(2) }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="checkout-divider"></div>
+
+                <div class="checkout-total-row">
+                    <span class="total-label">Total Amount</span>
+                    <span class="total-amount"><span class="currency">$</span>{{ cart_total|number_format(2) }}</span>
+                </div>
+
+                <form method="POST" action="{{ path('checkout_confirm') }}" class="checkout-form" enctype="multipart/form-data">
+                    <input type="hidden" name="_token" value="{{ csrf_token('confirm_checkout') }}">
+
+                    <!-- Payment Method Selection -->
+                    <div class="payment-method-section">
+                        <h4 class="payment-method-title">
+                            <i class="fa-solid fa-credit-card"></i> Payment Method
+                        </h4>
+                        <div class="payment-options">
+                            <label class="payment-option-label" id="label-cod">
+                                <input type="radio" name="payment_method" value="cod" checked onchange="togglePaymentProof(this.value)">
+                                <span class="payment-option-box" id="box-cod">
+                                    <i class="fa-solid fa-money-bill-wave"></i>
+                                    <span class="payment-option-name">Cash on Delivery</span>
+                                    <span class="payment-option-desc">Pay when your order arrives</span>
+                                </span>
+                            </label>
+                            <label class="payment-option-label" id="label-online">
+                                <input type="radio" name="payment_method" value="online" onchange="togglePaymentProof(this.value)">
+                                <span class="payment-option-box" id="box-online">
+                                    <i class="fa-solid fa-qrcode"></i>
+                                    <span class="payment-option-name">Online Payment</span>
+                                    <span class="payment-option-desc">GCash</span>
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Online Payment QR Panel (shown when online is selected) -->
+                        <div id="online-payment-panel" style="display:none;">
+
+                            <!-- QR Code Display: GCash only -->
+                            <div class="qr-display-box">
+                                <img id="qr-gcash" src="{{ asset('Assets/qr/gcash_qr.jpg') }}" alt="GCash QR Code" class="qr-img">
+                                <p class="qr-hint"><i class="fa-solid fa-circle-info"></i> Scan the QR code with your GCash app, then upload the screenshot below as proof.</p>
+                            </div>
+
+                            <!-- Proof of Payment Upload -->
+                            <div class="proof-upload-section" id="proof-upload-section">
+                                <label class="proof-upload-label" for="payment_proof">
+                                    <i class="fa-solid fa-upload"></i> Upload Proof of Payment
+                                    <span class="proof-upload-hint">JPG, PNG, WEBP or PDF — max 5 MB</span>
+                                </label>
+                                <input type="file" name="payment_proof" id="payment_proof" class="proof-upload-input" accept=".jpg,.jpeg,.png,.webp,.pdf">
+                                <div class="proof-preview" id="proof-preview" style="display:none;">
+                                    <img id="proof-img-preview" src="" alt="Preview">
+                                    <span id="proof-file-name"></span>
+                                </div>
+                            </div>
+
+                        </div><!-- /online-payment-panel -->
+                    </div>
+
+                    <button type="submit" name="confirm_checkout" class="btn-confirm-order">
+                        <i class="fa-solid fa-shield-halved"></i> Confirm &amp; Place Order
+                    </button>
+                </form>
+            </div>
+        {% endif %}
+    </main>
+</div>
+
+<script>
+function togglePaymentProof(value) {
+    var onlinePanel = document.getElementById('online-payment-panel');
+    var boxCod      = document.getElementById('box-cod');
+    var boxOnline   = document.getElementById('box-online');
+
+    if (value === 'online') {
+        onlinePanel.style.display = 'block';
+        boxOnline.classList.add('selected');
+        boxCod.classList.remove('selected');
+    } else {
+        onlinePanel.style.display = 'none';
+        boxCod.classList.add('selected');
+        boxOnline.classList.remove('selected');
+        // Clear file + preview
+        document.getElementById('payment_proof').value = '';
+        document.getElementById('proof-preview').style.display = 'none';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Highlight COD by default
+    var boxCod = document.getElementById('box-cod');
+    if (boxCod) boxCod.classList.add('selected');
+
+    // Image preview on file pick
+    var fileInput = document.getElementById('payment_proof');
+    if (fileInput) {
+        fileInput.addEventListener('change', function () {
+            var preview   = document.getElementById('proof-preview');
+            var imgEl     = document.getElementById('proof-img-preview');
+            var nameEl    = document.getElementById('proof-file-name');
+            var file      = this.files[0];
+
+            if (!file) { preview.style.display = 'none'; return; }
+
+            nameEl.textContent = file.name;
+            var ext = file.name.split('.').pop().toLowerCase();
+            if (['jpg','jpeg','png','webp'].includes(ext)) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    imgEl.src = e.target.result;
+                    imgEl.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imgEl.style.display = 'none'; // PDF – just show name
+            }
+            preview.style.display = 'flex';
+        });
+    }
+});
+</script>
+{% endblock %}

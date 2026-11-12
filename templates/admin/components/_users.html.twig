@@ -16,16 +16,22 @@
             {% for u in users %}
                 <tr>
                     <td><span class="order-id-tag">#{{ u.id }}</span></td>
-                    <td><input type="text" value="{{ u.username }}" class="input-user-name"></td>
-                    <td><input type="email" value="{{ u.email }}" class="input-user-email"></td>
+                    <td><input type="text" name="username" value="{{ u.username }}" form="user-form-{{ u.id }}" class="input-user-name"></td>
+                    <td><input type="email" name="email" value="{{ u.email }}" form="user-form-{{ u.id }}" class="input-user-email"></td>
                     <td>
-                        <select class="table-select">
+                        <select name="role" form="user-form-{{ u.id }}" class="table-select">
                             <option value="customer" {{ u.role == 'customer' ? 'selected' : '' }}>Customer</option>
                             <option value="admin" {{ u.role == 'admin' ? 'selected' : '' }}>Admin</option>
                         </select>
                     </td>
-                    <td><button type="button" class="btn-save-user">Save</button></td>
+                    <td>
+                        <button type="submit" name="update_user" form="user-form-{{ u.id }}" class="btn-save-user">Save</button>
+                    </td>
                 </tr>
+                <form id="user-form-{{ u.id }}" method="POST" action="{{ path('admin_update_user') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('admin_update_user') }}">
+                    <input type="hidden" name="user_id" value="{{ u.id }}">
+                </form>
             {% endfor %}
         </tbody>
     </table>
@@ -52,14 +58,36 @@
                         <span class="user-pwd-name">{{ u.username }}</span>
                         <span class="user-pwd-role-badge customer-pwd-badge"><i class="fa-solid fa-user"></i> Customer</span>
                     </div>
-                    <div class="user-pwd-form">
+                    <form method="POST" action="{{ path('admin_change_password') }}" class="user-pwd-form">
+                        <input type="hidden" name="_token" value="{{ csrf_token('admin_change_password') }}">
+                        <input type="hidden" name="user_id" value="{{ u.id }}">
                         <div class="pwd-input-wrap">
-                            <input type="password" placeholder="New password" class="input-new-pwd">
+                            <input type="password" name="new_password" placeholder="New password (min. 6 chars)" class="input-new-pwd" minlength="6" required autocomplete="new-password">
+                            <button type="button" class="pwd-toggle-btn" onclick="togglePasswordSibling(this)" aria-label="Toggle password visibility">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
                         </div>
-                        <button type="button" class="btn-change-pwd"><i class="fa-solid fa-floppy-disk"></i> Set Password</button>
-                    </div>
+                        <button type="submit" name="admin_change_password" class="btn-change-pwd">
+                            <i class="fa-solid fa-floppy-disk"></i> Set Password
+                        </button>
+                    </form>
                 </div>
             {% endif %}
         {% endfor %}
     </div>
 </div>
+
+<script>
+function togglePasswordSibling(btn) {
+    var wrap  = btn.closest('.pwd-input-wrap');
+    var input = wrap.querySelector('input[type="password"], input[type="text"]');
+    var icon  = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+</script>

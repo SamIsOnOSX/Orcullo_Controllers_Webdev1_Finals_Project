@@ -5,21 +5,10 @@ security:
 
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory:
-            memory:
-                users:
-                    admin:
-                        password: '$2y$13$C7ly0HIfiNWeknPg5OhCh.B5DtUCIVfshhnatLCSm7dJrzt2kIY.K'
-                        roles: ['ROLE_ADMIN', 'ROLE_USER'] # admin123
-                    'admin@orcullo.com':
-                        password: '$2y$13$C7ly0HIfiNWeknPg5OhCh.B5DtUCIVfshhnatLCSm7dJrzt2kIY.K'
-                        roles: ['ROLE_ADMIN', 'ROLE_USER']
-                    customer:
-                        password: '$2y$13$KANMYWR8.XCmAcS9u3aEsu0pH/FPoOmSt8PmFBZ5yNueoaPN/ibdC'
-                        roles: ['ROLE_USER'] # customer123
-                    'player1@example.com':
-                        password: '$2y$13$KANMYWR8.XCmAcS9u3aEsu0pH/FPoOmSt8PmFBZ5yNueoaPN/ibdC'
-                        roles: ['ROLE_USER'] 
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: username
 
     firewalls:
         dev:
@@ -27,14 +16,8 @@ security:
             security: false
         main:
             lazy: true
-            provider: users_in_memory
-            form_login:
-                login_path: app_login
-                check_path: app_login
-                username_parameter: identifier
-                password_parameter: password
-                enable_csrf: true
-                default_target_path: homepage
+            provider: app_user_provider
+            custom_authenticator: App\Security\LoginFormAuthenticator
             logout:
                 path: app_logout
                 target: homepage

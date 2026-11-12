@@ -1,5 +1,5 @@
 <div class="dashboard-card table-responsive">
-    <h3><i class="fa-solid fa-boxes-stacked card-icon"></i>Inventory & Stock Management ({{ products|length }})</h3>
+    <h3><i class="fa-solid fa-boxes-stacked card-icon"></i>Inventory &amp; Stock Management ({{ products|length }})</h3>
     {% if products is empty %}
         <div class="empty-state-box">
             <i class="fa-solid fa-boxes-stacked empty-icon"></i>
@@ -34,13 +34,21 @@
                         </td>
                         <td><span class="price-cell">${{ product.price|number_format(2) }}</span></td>
                         <td>
-                            <div class="stock-form">
-                                <input type="number" value="{{ product.stock }}" min="0" class="input-stock">
-                                <button type="button" class="btn-update-stock">Update</button>
-                            </div>
+                            <form method="POST" action="{{ path('admin_update_stock') }}" class="stock-form">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin_update_stock') }}">
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                <input type="number" name="new_stock" value="{{ product.stock }}" min="0" class="input-stock">
+                                <button type="submit" name="update_stock" class="btn-update-stock">Update</button>
+                            </form>
                         </td>
                         <td class="text-right">
-                            <button type="button" class="btn-delete"><i class="fa-solid fa-trash"></i> Delete</button>
+                            <form method="POST" action="{{ path('admin_delete_product') }}" class="inline-form" onsubmit="return confirm('Are you sure you want to delete \'{{ product.name|e('js') }}\'?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin_delete_product') }}">
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                <button type="submit" name="delete_product" class="btn-delete">
+                                    <i class="fa-solid fa-trash"></i> Delete
+                                </button>
+                            </form>
                         </td>
                     </tr>
                 {% endfor %}

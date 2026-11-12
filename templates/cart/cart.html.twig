@@ -93,10 +93,9 @@
 
             <div class="cart-summary">
                 <h3 class="cart-total-amount">Total: ${{ cart_total|number_format(2) }}</h3>
-                {# Checkout page not transferred yet — stub, same pattern as the other unwired actions. #}
-                <button type="button" class="cart-checkout-btn" title="Checkout coming soon">
+                <a href="{{ path('checkout') }}" class="cart-checkout-btn">
                     <i class="fa-solid fa-lock"></i> Proceed to Checkout
-                </button>
+                </a>
             </div>
         {% endif %}
     </main>

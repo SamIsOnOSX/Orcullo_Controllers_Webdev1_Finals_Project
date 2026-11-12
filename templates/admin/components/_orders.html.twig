@@ -14,6 +14,7 @@
                     <th>Date</th>
                     <th>Total Amount</th>
                     <th>Payment</th>
+                    <th>Proof</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -21,27 +22,45 @@
             <tbody>
                 {% for order in orders %}
                     <tr>
-                        <td><span class="order-id-tag">#{{ order.id }}</span></td>
-                        <td>{{ order.user ? order.user.username : 'Unknown' }}</td>
-                        <td>{{ order.createdAt ? order.createdAt|date('M j, Y') : '-' }}</td>
-                        <td><span class="price-cell">${{ order.totalAmount|number_format(2) }}</span></td>
-                        <td>
-                            {% if order.paymentMethod|lower == 'online' %}
-                                <span class="payment-badge payment-badge--online"><i class="fa-solid fa-qrcode"></i> Online</span>
-                            {% else %}
-                                <span class="payment-badge payment-badge--cod"><i class="fa-solid fa-money-bill-wave"></i> COD</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <select class="table-select">
-                                <option value="pending" {{ order.status|lower == 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="paid" {{ order.status|lower == 'paid' ? 'selected' : '' }}>Paid</option>
-                                <option value="shipped" {{ order.status|lower == 'shipped' ? 'selected' : '' }}>Shipped</option>
-                                <option value="delivered" {{ order.status|lower == 'delivered' ? 'selected' : '' }}>Delivered</option>
-                                <option value="cancelled" {{ order.status|lower == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                            </select>
-                        </td>
-                        <td><button type="button" class="btn-update-order">Update</button></td>
+                        <form method="POST" action="{{ path('admin_update_order') }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('admin_update_order') }}">
+                            <input type="hidden" name="order_id" value="{{ order.id }}">
+                            <td><span class="order-id-tag">#{{ order.id }}</span></td>
+                            <td>{{ order.user ? order.user.username : 'Unknown' }}</td>
+                            <td>{{ order.createdAt ? order.createdAt|date('M j, Y') : '-' }}</td>
+                            <td><span class="price-cell">${{ order.totalAmount|number_format(2) }}</span></td>
+                            <td>
+                                {% if order.paymentMethod|lower == 'online' %}
+                                    <span class="payment-badge payment-badge--online"><i class="fa-solid fa-qrcode"></i> Online</span>
+                                {% else %}
+                                    <span class="payment-badge payment-badge--cod"><i class="fa-solid fa-money-bill-wave"></i> COD</span>
+                                {% endif %}
+                            </td>
+                            <td class="proof-cell">
+                                {% if order.paymentProof %}
+                                    <a href="{{ asset(order.paymentProof) }}" target="_blank" class="proof-link proof-link--img">
+                                        {% if order.paymentProof|lower ends with '.pdf' %}
+                                            <span><i class="fa-solid fa-file-pdf"></i> View PDF</span>
+                                        {% else %}
+                                            <img src="{{ asset(order.paymentProof) }}" alt="Payment proof for order #{{ order.id }}" class="proof-thumbnail">
+                                            <span>View</span>
+                                        {% endif %}
+                                    </a>
+                                {% else %}
+                                    <span class="proof-none">&mdash;</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <select name="status" class="table-select">
+                                    <option value="pending" {{ order.status|lower == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="paid" {{ order.status|lower == 'paid' ? 'selected' : '' }}>Paid</option>
+                                    <option value="shipped" {{ order.status|lower == 'shipped' ? 'selected' : '' }}>Shipped</option>
+                                    <option value="delivered" {{ order.status|lower == 'delivered' ? 'selected' : '' }}>Delivered</option>
+                                    <option value="cancelled" {{ order.status|lower == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                </select>
+                            </td>
+                            <td><button type="submit" name="update_order" class="btn-update-order">Update</button></td>
+                        </form>
                     </tr>
                 {% endfor %}
             </tbody>

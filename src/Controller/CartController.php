@@ -2,8 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Product;
+use App\Repository\ProductRepository;
 use App\Service\CartService;
-use App\Service\MockDataService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,7 +15,7 @@ class CartController extends AbstractController
 {
     public function __construct(
         private readonly CartService $cartService,
-        private readonly MockDataService $mockDataService,
+        private readonly ProductRepository $productRepository,
     ) {
     }
 
@@ -22,7 +23,7 @@ class CartController extends AbstractController
     public function index(): Response
     {
         return $this->render('cart/cart.html.twig', [
-            'cart_items' => $this->enrichItems(),
+            'cart_items' => $this->cartService->getDetailedItems(),
             'cart_total' => $this->cartService->getTotal(),
         ]);
     }
@@ -37,7 +38,7 @@ class CartController extends AbstractController
         }
 
         $productId = $request->request->getInt('product_id', 0);
-        $product = $this->findProduct($productId);
+        $product = $this->productRepository->find($productId);
 
         if ($product === null) {
             $this->addFlash('cart_error', 'Sorry, that product is no longer available.');
@@ -49,15 +50,15 @@ class CartController extends AbstractController
         $error = $this->cartService->addItem(
             $productId,
             $quantity,
-            (int) ($product['stock'] ?? 0),
-            (string) ($product['name'] ?? 'Product'),
-            (float) (string) ($product['price'] ?? 0),
+            $product->getStock(),
+            $product->getName(),
+            (float) $product->getPrice(),
         );
 
         if ($error !== null) {
             $this->addFlash('cart_error', $error);
         } else {
-            $this->addFlash('cart_success', sprintf("'%s' added to your cart.", $product['name']));
+            $this->addFlash('cart_success', sprintf("'%s' added to your cart.", $product->getName()));
         }
 
         return $this->redirectToRoute('shop');
@@ -86,9 +87,9 @@ class CartController extends AbstractController
             : (int) $request->request->get('quantity', 1);
 
         $productId = $items[$index]['product_id'] ?? null;
-        $product = $productId !== null ? $this->findProduct((int) $productId) : null;
+        $product = is_int($productId) ? $this->productRepository->find($productId) : null;
 
-        $error = $this->cartService->updateQuantity($index, $newQuantity, $product);
+        $error = $this->cartService->updateQuantity($index, $newQuantity, $product !== null ? $this->productToArray($product) : null);
 
         if ($error !== null) {
             $this->addFlash('cart_error', $error);
@@ -114,36 +115,12 @@ class CartController extends AbstractController
     }
 
     /**
-     * @return list<array<string, mixed>> Cart items with an imagePath added for display.
+     * Legacy CartService::updateQuantity caps against an array product shape.
+     *
+     * @return array{name: string, stock: int}
      */
-    private function enrichItems(): array
+    private function productToArray(Product $product): array
     {
-        $catalog = [];
-        foreach ($this->mockDataService->getProducts() as $product) {
-            $catalog[(int) ($product['id'] ?? 0)] = $product;
-        }
-
-        return array_map(static function (array $item) use ($catalog): array {
-            $productId = $item['product_id'] ?? null;
-            $item['imagePath'] = ($productId !== null && isset($catalog[$productId]))
-                ? $catalog[$productId]['imagePath']
-                : null;
-
-            return $item;
-        }, $this->cartService->getItems());
-    }
-
-    /**
-     * @return array<string, mixed>|null
-     */
-    private function findProduct(int $productId): ?array
-    {
-        foreach ($this->mockDataService->getProducts() as $product) {
-            if ((int) ($product['id'] ?? 0) === $productId) {
-                return $product;
-            }
-        }
-
-        return null;
+        return ['name' => $product->getName(), 'stock' => $product->getStock()];
     }
 }

@@ -32,7 +32,8 @@
             <a href="{{ path('shop') }}">Shop</a>
             <a href="{{ path('customize') }}">Customize</a>
             <a href="{{ path('about') }}">About</a>
-            
+            <a href="{{ path('support') }}">Support</a>
+
             {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('admin_dashboard') }}">Admin Panel</a>
             {% endif %}
@@ -43,8 +44,9 @@
                 <input type="text" placeholder="Search...">
             </div>
             <a href="{{ path('cart') }}" class="icon-link" title="Cart"><i class="fa-solid fa-cart-shopping"></i></a>
-            
+
             {% if app.user %}
+                <a href="{{ path('app_account') }}" class="icon-link" title="My Account"><i class="fa-regular fa-user"></i></a>
                 <span style="color: #ff9b44; font-size: 13px; font-weight: 600; margin-right: 6px;">{{ app.user.userIdentifier }}</span>
                 <a href="{{ path('app_logout') }}" class="icon-link" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></a>
             {% else %}
@@ -69,16 +71,16 @@
             
             <div class="footer-column links-column">
                 <h4>SHOP</h4>
-                <a href="#">Controllers</a>
-                <a href="#">Custom Builds</a>
-                <a href="#">Accessories</a>
+                <a href="{{ path('shop') }}">Controllers</a>
+                <a href="{{ path('customize') }}">Custom Builds</a>
+                <a href="{{ path('shop') }}">Accessories</a>
             </div>
-            
+
             <div class="footer-column links-column support-column">
                 <h4>SUPPORT</h4>
-                <a href="#">Support Center</a>
-                <a href="#">Contact Us</a>
-                <a href="#">FAQs</a>
+                <a href="{{ path('support') }}">Support Center</a>
+                <a href="{{ path('support') }}#contact">Contact Us</a>
+                <a href="{{ path('support') }}#contact">FAQs</a>
             </div>
 
             <div class="footer-column newsletter-column">
