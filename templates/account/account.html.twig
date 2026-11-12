@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}My Account | Orcullo Custom Controllers{% endblock %}
+{% block title %}My Profile & Orders | Orcullo Custom Controllers{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
@@ -9,10 +9,44 @@
 {% block body %}
 <div class="dashboard-page-wrapper">
     <main class="dashboard-container">
-        <div class="dashboard-header">
-            <span class="user-role-badge"><i class="fa-solid fa-user"></i> Customer Dashboard</span>
-            <h1>Welcome, <span class="username-highlight">{{ user.username }}</span></h1>
-            <p>Manage your account credentials and track your custom controller orders.</p>
+        <!-- Hero Header with Profile Summary -->
+        <div class="customer-profile-hero">
+            <div class="customer-profile-hero-main">
+                <div class="customer-hero-avatar">
+                    {{ user.username|first|upper }}
+                </div>
+                <div class="customer-hero-details">
+                    <div class="customer-hero-badges">
+                        <span class="user-role-badge"><i class="fa-solid fa-circle-user"></i> Customer Account</span>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('admin_dashboard') }}" class="user-role-badge admin-badge" style="text-decoration: none;">
+                                <i class="fa-solid fa-shield-halved"></i> Admin Panel
+                            </a>
+                        {% endif %}
+                    </div>
+                    <h1 class="customer-hero-name">{{ user.username }}</h1>
+                    <p class="customer-hero-meta">
+                        <span><i class="fa-solid fa-envelope"></i> {{ user.email }}</span>
+                        <span><i class="fa-solid fa-calendar-check"></i> Member</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stats Overview Cards -->
+            <div class="customer-stats-strip">
+                <div class="customer-stat-pill">
+                    <span class="customer-stat-num">{{ orders|length }}</span>
+                    <span class="customer-stat-lbl">Total Orders</span>
+                </div>
+                {% set delivered_count = 0 %}
+                {% for o in orders %}
+                    {% if o.status|lower == 'delivered' %}{% set delivered_count = delivered_count + 1 %}{% endif %}
+                {% endfor %}
+                <div class="customer-stat-pill">
+                    <span class="customer-stat-num" style="color: #34d399;">{{ delivered_count }}</span>
+                    <span class="customer-stat-lbl">Delivered</span>
+                </div>
+            </div>
         </div>
 
         {% if message %}
@@ -29,120 +63,169 @@
             </div>
         {% endif %}
 
-        <!-- Account Info Card -->
-        <div class="dashboard-card">
-            <div class="card-header-bar">
-                <h3><i class="fa-solid fa-user-pen card-icon"></i> Account Information</h3>
-            </div>
-            <form method="POST" action="{{ path('app_account') }}" class="dashboard-form">
-                <input type="hidden" name="_token" value="{{ csrf_token('update_profile') }}">
-                <div class="form-row">
-                    <div class="form-group flex-1">
-                        <label for="user_username"><i class="fa-solid fa-user label-icon"></i> Username</label>
-                        <input type="text" id="user_username" name="username" value="{{ user.username }}" required>
-                    </div>
+        <!-- Interactive Customer Navigation Tabs -->
+        <nav class="customer-tabs-nav" aria-label="Customer Dashboard Sections">
+            <button type="button" class="customer-tab-btn active" onclick="switchCustomerTab('profile-tab', this)">
+                <i class="fa-solid fa-user-pen"></i>
+                <span>Profile & Security</span>
+            </button>
+            <button type="button" class="customer-tab-btn" onclick="switchCustomerTab('orders-tab', this)">
+                <i class="fa-solid fa-box-open"></i>
+                <span>Order History ({{ orders|length }})</span>
+            </button>
+        </nav>
 
-                    <div class="form-group flex-1">
-                        <label for="user_email"><i class="fa-solid fa-envelope label-icon"></i> Email Address</label>
-                        <input type="email" id="user_email" name="email" value="{{ user.email }}" required>
+        <!-- Tab 1: Profile & Password Management -->
+        <div id="profile-tab" class="customer-tab-panel active">
+            <div class="admin-grid-2">
+                <!-- Account Info Card -->
+                <div class="dashboard-card">
+                    <div class="card-header-bar">
+                        <h3><i class="fa-solid fa-id-card card-icon"></i> Account Details</h3>
                     </div>
+                    <p class="card-subtitle">Keep your username and primary contact email up to date for order tracking.</p>
+
+                    <form method="POST" action="{{ path('app_account') }}" class="dashboard-form">
+                        <input type="hidden" name="_token" value="{{ csrf_token('update_profile') }}">
+                        <div class="form-group">
+                            <label for="user_username"><i class="fa-solid fa-user label-icon"></i> Username</label>
+                            <input type="text" id="user_username" name="username" value="{{ user.username }}" required autocomplete="username">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="user_email"><i class="fa-solid fa-envelope label-icon"></i> Email Address</label>
+                            <input type="email" id="user_email" name="email" value="{{ user.email }}" required autocomplete="email">
+                        </div>
+
+                        <button type="submit" name="update_profile" class="btn-primary">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Profile Details
+                        </button>
+                    </form>
                 </div>
 
-                <button type="submit" name="update_profile" class="btn-primary">
-                    <i class="fa-solid fa-floppy-disk"></i> Save Changes
-                </button>
-            </form>
+                <!-- Change Password Card -->
+                <div class="dashboard-card">
+                    <div class="card-header-bar">
+                        <h3><i class="fa-solid fa-shield-halved card-icon"></i> Change Password</h3>
+                    </div>
+                    <p class="card-subtitle">Ensure your account stays secure by using a strong password of 6+ characters.</p>
+
+                    <form method="POST" action="{{ path('app_account') }}" class="dashboard-form">
+                        <input type="hidden" name="_token" value="{{ csrf_token('change_password') }}">
+                        
+                        <div class="form-group">
+                            <label for="current_password"><i class="fa-solid fa-lock label-icon"></i> Current Password</label>
+                            <div class="pwd-input-wrap">
+                                <input type="password" id="current_password" name="current_password" placeholder="Enter your current password" required autocomplete="current-password">
+                                <button type="button" class="pwd-toggle-btn" onclick="togglePassword('current_password', this)" aria-label="Toggle password visibility">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="new_password"><i class="fa-solid fa-key label-icon"></i> New Password</label>
+                            <div class="pwd-input-wrap">
+                                <input type="password" id="new_password" name="new_password" placeholder="Minimum 6 characters" required minlength="6" autocomplete="new-password">
+                                <button type="button" class="pwd-toggle-btn" onclick="togglePassword('new_password', this)" aria-label="Toggle password visibility">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirm_password"><i class="fa-solid fa-check-double label-icon"></i> Confirm New Password</label>
+                            <div class="pwd-input-wrap">
+                                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your new password" required minlength="6" autocomplete="new-password">
+                                <button type="button" class="pwd-toggle-btn" onclick="togglePassword('confirm_password', this)" aria-label="Toggle password visibility">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" name="change_password" class="btn-primary">
+                            <i class="fa-solid fa-lock"></i> Update Password
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
 
-        <!-- Change Password Card -->
-        <div class="dashboard-card">
-            <div class="card-header-bar">
-                <h3><i class="fa-solid fa-key card-icon"></i> Change Password</h3>
-            </div>
-            <form method="POST" action="{{ path('app_account') }}" class="dashboard-form">
-                <input type="hidden" name="_token" value="{{ csrf_token('change_password') }}">
-                <div class="form-row">
-                    <div class="form-group flex-1">
-                        <label for="current_password"><i class="fa-solid fa-lock label-icon"></i> Current Password</label>
-                        <div class="pwd-input-wrap">
-                            <input type="password" id="current_password" name="current_password" placeholder="Enter current password" required autocomplete="current-password">
-                            <button type="button" class="pwd-toggle-btn" onclick="togglePassword('current_password', this)" aria-label="Toggle password visibility">
-                                <i class="fa-solid fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="form-group flex-1">
-                        <label for="new_password"><i class="fa-solid fa-shield-halved label-icon"></i> New Password</label>
-                        <div class="pwd-input-wrap">
-                            <input type="password" id="new_password" name="new_password" placeholder="Minimum 6 characters" required minlength="6" autocomplete="new-password">
-                            <button type="button" class="pwd-toggle-btn" onclick="togglePassword('new_password', this)" aria-label="Toggle password visibility">
-                                <i class="fa-solid fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="form-group flex-1">
-                        <label for="confirm_password"><i class="fa-solid fa-check-double label-icon"></i> Confirm New Password</label>
-                        <div class="pwd-input-wrap">
-                            <input type="password" id="confirm_password" name="confirm_password" placeholder="Repeat new password" required minlength="6" autocomplete="new-password">
-                            <button type="button" class="pwd-toggle-btn" onclick="togglePassword('confirm_password', this)" aria-label="Toggle password visibility">
-                                <i class="fa-solid fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
+        <!-- Tab 2: Orders Section -->
+        <div id="orders-tab" class="customer-tab-panel">
+            <div class="dashboard-card">
+                <div class="card-header-bar">
+                    <h3><i class="fa-solid fa-receipt card-icon"></i> My Orders</h3>
+                    <a href="{{ path('shop') }}" class="card-link">Browse Controllers <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
 
-                <button type="submit" name="change_password" class="btn-primary">
-                    <i class="fa-solid fa-lock"></i> Update Password
-                </button>
-            </form>
-        </div>
-
-        <!-- Order History Card -->
-        <div class="dashboard-card">
-            <div class="card-header-bar">
-                <h3><i class="fa-solid fa-clock-rotate-left card-icon"></i> Order History</h3>
-            </div>
-            {% if orders is empty %}
-                <div class="empty-state-box">
-                    <i class="fa-solid fa-box-open empty-icon"></i>
-                    <p class="empty-text">You haven't placed any orders yet.</p>
-                    <a href="{{ path('shop') }}" class="btn btn-outline">Explore Controllers</a>
-                </div>
-            {% else %}
-                <div class="table-responsive">
-                    <table class="order-table">
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Date</th>
-                                <th>Total Amount</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for order in orders %}
-                                {% set status = order.status|lower %}
-                                {% set status_class = 'status-pending' %}
-                                {% if status == 'delivered' or status == 'paid' %}
-                                    {% set status_class = 'status-paid' %}
-                                {% elseif status == 'shipped' %}
-                                    {% set status_class = 'status-shipped' %}
-                                {% elseif status == 'processing' %}
-                                    {% set status_class = 'status-processing' %}
-                                {% elseif status == 'cancelled' %}
-                                    {% set status_class = 'status-cancelled' %}
-                                {% endif %}
+                {% if orders is empty %}
+                    <div class="empty-state-box">
+                        <i class="fa-solid fa-box-open empty-icon"></i>
+                        <p class="empty-text">You haven't placed any orders yet. Build your dream controller!</p>
+                        <a href="{{ path('shop') }}" class="btn-primary" style="margin-top: 10px;">Explore Controllers</a>
+                    </div>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="order-table">
+                            <thead>
                                 <tr>
-                                    <td><span class="order-id-tag">#{{ order.id }}</span></td>
-                                    <td>{{ order.createdAt ? order.createdAt|date('M j, Y') }}</td>
-                                    <td class="price-cell">${{ order.totalAmount|number_format(2) }}</td>
-                                    <td><span class="status-badge {{ status_class }}">{{ order.status }}</span></td>
+                                    <th>Order ID</th>
+                                    <th>Date</th>
+                                    <th>Total Amount</th>
+                                    <th>Payment</th>
+                                    <th>Proof</th>
+                                    <th>Status</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% endif %}
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                    {% set status = order.status|lower %}
+                                    {% set status_class = 'status-pending' %}
+                                    {% if status == 'delivered' or status == 'paid' %}
+                                        {% set status_class = 'status-paid' %}
+                                    {% elseif status == 'shipped' %}
+                                        {% set status_class = 'status-shipped' %}
+                                    {% elseif status == 'processing' %}
+                                        {% set status_class = 'status-processing' %}
+                                    {% elseif status == 'cancelled' %}
+                                        {% set status_class = 'status-cancelled' %}
+                                    {% endif %}
+                                    <tr>
+                                        <td><span class="order-id-tag">#{{ order.id }}</span></td>
+                                        <td>{{ order.createdAt ? order.createdAt|date('M j, Y') : '-' }}</td>
+                                        <td><span class="price-cell">${{ order.totalAmount|number_format(2) }}</span></td>
+                                        <td>
+                                            {% if order.paymentMethod|lower == 'online' %}
+                                                <span class="payment-badge payment-badge--online"><i class="fa-solid fa-qrcode"></i> Online</span>
+                                            {% else %}
+                                                <span class="payment-badge payment-badge--cod"><i class="fa-solid fa-money-bill-wave"></i> COD</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if order.paymentProof %}
+                                                <a href="{{ asset(order.paymentProof) }}" target="_blank" class="proof-link" title="View Payment Proof">
+                                                    {% if order.paymentProof|lower ends with '.pdf' %}
+                                                        <span class="proof-pdf-box"><i class="fa-solid fa-file-pdf"></i> PDF</span>
+                                                    {% else %}
+                                                        <div class="proof-thumb-wrapper" style="width: 44px; height: 44px;">
+                                                            <img src="{{ asset(order.paymentProof) }}" alt="Payment proof" class="proof-thumbnail">
+                                                            <span class="proof-hover-overlay"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+                                                        </div>
+                                                    {% endif %}
+                                                </a>
+                                            {% else %}
+                                                <span class="proof-none"><i class="fa-solid fa-circle-minus"></i> None</span>
+                                            {% endif %}
+                                        </td>
+                                        <td><span class="status-badge {{ status_class }}">{{ order.status }}</span></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </main>
 </div>
@@ -157,6 +240,28 @@ function togglePassword(inputId, btn) {
     } else {
         input.type = 'password';
         icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+
+function switchCustomerTab(panelId, btn) {
+    document.querySelectorAll('.customer-tab-btn').forEach(function(b) {
+        b.classList.remove('active');
+    });
+    document.querySelectorAll('.customer-tab-panel').forEach(function(p) {
+        p.classList.remove('active');
+    });
+    btn.classList.add('active');
+    var target = document.getElementById(panelId);
+    if (target) {
+        target.classList.add('active');
+    }
+}
+
+// Auto-switch to orders tab if URL contains #orders
+if (window.location.hash === '#orders') {
+    var ordersBtn = document.querySelectorAll('.customer-tab-btn')[1];
+    if (ordersBtn) {
+        switchCustomerTab('orders-tab', ordersBtn);
     }
 }
 </script>

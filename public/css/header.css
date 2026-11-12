@@ -81,6 +81,78 @@
     transform: scale(1.1);
 }
 
+/* Header User Badge */
+.header-user-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px 4px 4px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 65, 161, 0.25);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.header-user-badge:hover {
+    background: rgba(255, 65, 161, 0.12);
+    border-color: #ff41a1;
+    transform: translateY(-1px);
+}
+
+.header-user-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--gradient-primary, linear-gradient(90deg, #ff41a1, #ff9b44));
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+}
+
+.header-user-name {
+    color: #f1f5f9;
+    font-size: 13px;
+    font-weight: 600;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.header-login-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.header-login-link:hover {
+    background: var(--gradient-primary, linear-gradient(90deg, #ff41a1, #ff9b44));
+    border-color: transparent;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.header-logout-btn {
+    opacity: 0.75;
+}
+
+.header-logout-btn:hover {
+    opacity: 1;
+    color: #f87171 !important;
+}
+
 .search-bar input {
     background-color: #1a1028;
     border: 1px solid var(--border-color);

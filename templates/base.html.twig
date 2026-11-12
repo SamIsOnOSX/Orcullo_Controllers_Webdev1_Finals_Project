@@ -32,7 +32,10 @@
             <a href="{{ path('shop') }}">Shop</a>
             <a href="{{ path('customize') }}">Customize</a>
             <a href="{{ path('about') }}">About</a>
-            <a href="{{ path('support') }}">Support</a>
+
+            {% if app.user %}
+                <a href="{{ path('app_account') }}" class="{{ app.request.attributes.get('_route') == 'app_account' ? 'active' : '' }}">Profile</a>
+            {% endif %}
 
             {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('admin_dashboard') }}">Admin Panel</a>
@@ -46,11 +49,16 @@
             <a href="{{ path('cart') }}" class="icon-link" title="Cart"><i class="fa-solid fa-cart-shopping"></i></a>
 
             {% if app.user %}
-                <a href="{{ path('app_account') }}" class="icon-link" title="My Account"><i class="fa-regular fa-user"></i></a>
-                <span style="color: #ff9b44; font-size: 13px; font-weight: 600; margin-right: 6px;">{{ app.user.userIdentifier }}</span>
-                <a href="{{ path('app_logout') }}" class="icon-link" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></a>
+                <a href="{{ path('app_account') }}" class="header-user-badge" title="Go to Profile & Account">
+                    <span class="header-user-avatar">{{ app.user.userIdentifier|first|upper }}</span>
+                    <span class="header-user-name">{{ app.user.userIdentifier }}</span>
+                </a>
+                <a href="{{ path('app_logout') }}" class="icon-link header-logout-btn" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></a>
             {% else %}
-                <a href="{{ path('app_login') }}" class="icon-link" title="Login"><i class="fa-regular fa-user"></i></a>
+                <a href="{{ path('app_login') }}" class="header-login-link" title="Login / Register">
+                    <i class="fa-regular fa-user"></i>
+                    <span>Login</span>
+                </a>
             {% endif %}
         </div>
     </header>
