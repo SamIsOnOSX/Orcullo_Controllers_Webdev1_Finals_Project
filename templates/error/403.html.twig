@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="4;url={{ dashboard_url }}">
+    <title>403 - Access Denied | Orcullo Custom Controllers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-body, 'Inter', sans-serif);
+            background:
+                radial-gradient(ellipse at 20% 0%, rgba(255, 65, 161, 0.14), transparent 55%),
+                radial-gradient(ellipse at 85% 90%, rgba(255, 155, 68, 0.10), transparent 50%),
+                linear-gradient(160deg, #0d0618 0%, #1a0b2e 55%, #12071d 100%);
+            color: #e2e8f0;
+            padding: 24px;
+        }
+
+        .error-card {
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            padding: 48px 40px;
+            background: rgba(23, 12, 38, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .error-code {
+            font-family: var(--font-display, 'Space Grotesk', sans-serif);
+            font-size: 5rem;
+            font-weight: 700;
+            line-height: 1;
+            background: linear-gradient(90deg, #ff41a1, #ff9b44);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .error-icon {
+            font-size: 2.4rem;
+            color: #ff41a1;
+            margin: 18px 0 6px;
+        }
+
+        .error-card h1 {
+            font-family: var(--font-display, 'Space Grotesk', sans-serif);
+            font-size: 1.6rem;
+            color: #f8fafc;
+            margin-bottom: 10px;
+        }
+
+        .error-card p.error-message {
+            color: #bfaecf;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 6px;
+        }
+
+        .error-hint {
+            color: #8d829b;
+            font-size: 0.82rem;
+            margin-bottom: 28px;
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .error-redirect {
+            margin-top: 18px;
+            color: #6b5f7d;
+            font-size: 0.75rem;
+        }
+
+        .error-redirect i {
+            margin-right: 4px;
+            color: #ff9b44;
+        }
+
+        .btn-error {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 22px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            text-decoration: none;
+            transition: opacity 0.2s, transform 0.15s;
+        }
+
+        .btn-error:hover { opacity: 0.88; transform: translateY(-1px); }
+
+        .btn-error-primary {
+            background: linear-gradient(90deg, #ff41a1, #ff9b44);
+            color: #ffffff;
+        }
+
+        .btn-error-ghost {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #e2e8f0;
+        }
+
+        .error-brand {
+            margin-top: 30px;
+            color: #6b5f7d;
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-card">
+        <div class="error-code">403</div>
+        <i class="fa-solid fa-ban error-icon"></i>
+        <h1>Access Denied</h1>
+        <p class="error-message">You don't have permission to view this page.</p>
+        <p class="error-hint">
+            {% if username %}
+                You're signed in as <strong>{{ username }}</strong>. {{ access_hint }}
+            {% else %}
+                Please sign in with an account that has access.
+            {% endif %}
+        </p>
+        <div class="error-actions">
+            <a href="{{ dashboard_url }}" class="btn-error btn-error-primary"><i class="fa-solid fa-gauge-high"></i> Go to My Dashboard</a>
+            <a href="/" class="btn-error btn-error-ghost"><i class="fa-solid fa-store"></i> Back to Store</a>
+        </div>
+        <div class="error-redirect"><i class="fa-solid fa-circle-notch fa-spin"></i> Redirecting you to your dashboard in a few seconds&hellip;</div>
+        <div class="error-brand">Orcullo Custom Controllers</div>
+    </div>
+</body>
+</html>

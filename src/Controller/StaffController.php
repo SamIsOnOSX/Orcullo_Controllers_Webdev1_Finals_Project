@@ -3,13 +3,17 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Entity\User;
+use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -31,8 +35,104 @@ final class StaffController extends AbstractController
 
     public function __construct(
         private readonly ProductRepository $productRepository,
+        private readonly OrderRepository $orderRepository,
+        private readonly UserRepository $userRepository,
         private readonly EntityManagerInterface $entityManager,
+        private readonly UserPasswordHasherInterface $passwordHasher,
     ) {
+    }
+
+    /**
+     * Shared "My Profile" page for admins and staff members. Admins reach
+     * it through the role hierarchy (ROLE_ADMIN grants ROLE_STAFF). Shows
+     * the account's own details plus activity stats, and lets the user
+     * edit their username/email/address or change their own password
+     * (which takes effect the next time they sign in).
+     */
+    #[Route('/profile', name: 'staff_profile', methods: ['GET', 'POST'])]
+    public function profile(Request $request): Response
+    {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('staff_profile', (string) $request->request->get('_token'))) {
+                $this->addFlash('admin_error', 'Your session expired. Please try again.');
+            } elseif ($request->request->get('form_type') === 'password') {
+                $this->changeOwnPassword($request, $user);
+            } else {
+                $this->updateOwnDetails($request, $user);
+            }
+
+            return $this->redirectToRoute('staff_profile');
+        }
+
+        return $this->render('staff/profile.html.twig', [
+            'profile_orders' => $this->orderRepository->countByUser($user),
+            'profile_products' => $this->productRepository->countByOwner($user),
+        ]);
+    }
+
+    /** Saves the signed-in user's own username / email / address. */
+    private function updateOwnDetails(Request $request, User $user): void
+    {
+        $username = trim((string) $request->request->get('username', ''));
+        $email = trim((string) $request->request->get('email', ''));
+        $address = trim((string) $request->request->get('address', ''));
+
+        if ($username === '' || $email === '') {
+            $this->addFlash('admin_error', 'Username and email cannot be empty.');
+
+            return;
+        }
+
+        if (mb_strlen($username) < 3) {
+            $this->addFlash('admin_error', 'Username must be at least 3 characters.');
+
+            return;
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $this->addFlash('admin_error', 'Please enter a valid email address.');
+
+            return;
+        }
+
+        $clash = $this->userRepository->findOneBy(['username' => $username]);
+        if ($clash !== null && $clash->getId() !== $user->getId()) {
+            $this->addFlash('admin_error', "Username '{$username}' is already taken.");
+
+            return;
+        }
+
+        $clash = $this->userRepository->findOneBy(['email' => $email]);
+        if ($clash !== null && $clash->getId() !== $user->getId()) {
+            $this->addFlash('admin_error', "Email '{$email}' is already in use.");
+
+            return;
+        }
+
+        $user->setUsername($username);
+        $user->setEmail($email);
+        $user->setAddress($address !== '' ? $address : null);
+        $this->entityManager->flush();
+        $this->addFlash('admin_message', 'Your profile has been updated.');
+    }
+
+    /** Re-hashes and saves the signed-in user's own password. */
+    private function changeOwnPassword(Request $request, User $user): void
+    {
+        $newPassword = trim((string) $request->request->get('new_password', ''));
+
+        if (strlen($newPassword) < 6) {
+            $this->addFlash('admin_error', 'Password must be at least 6 characters.');
+
+            return;
+        }
+
+        $user->setPassword($this->passwordHasher->hashPassword($user, $newPassword));
+        $this->entityManager->flush();
+        $this->addFlash('admin_message', 'Your password has been updated. It takes effect the next time you sign in.');
     }
 
     #[Route('/products', name: 'staff_products')]

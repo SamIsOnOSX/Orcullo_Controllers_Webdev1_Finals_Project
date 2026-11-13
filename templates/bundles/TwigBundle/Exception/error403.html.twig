@@ -1,0 +1,4 @@
+{# Production fallback for 403 responses (TwigBundle renders this when
+   APP_DEBUG=0). In dev, App\EventSubscriber\AccessDeniedSubscriber already
+   renders the same page directly. #}
+{% include 'error/403.html.twig' %}

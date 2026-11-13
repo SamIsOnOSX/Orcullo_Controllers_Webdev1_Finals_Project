@@ -10,7 +10,7 @@ framework:
 
     # Cache-busting query string on asset() URLs (bump when css/js change).
     assets:
-        version: '20261113_v13'
+        version: '20261113_v14'
 
     #esi: true
     #fragments: true

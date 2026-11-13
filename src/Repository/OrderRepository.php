@@ -82,6 +82,17 @@ class OrderRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    /** Number of orders placed by the given customer/member (profile stat). */
+    public function countByUser(User $user): int
+    {
+        return (int) $this->createQueryBuilder('o')
+            ->select('COUNT(o.id)')
+            ->andWhere('o.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     public function sumTotalAmount(): float
     {
         return (float) $this->createQueryBuilder('o')

@@ -74,10 +74,10 @@
                 <h1 class="admin-page-title">{{ block('admin_title') }}</h1>
             </div>
             <div class="admin-topbar-actions">
-                <span class="admin-user-chip" title="{{ app.user ? app.user.userIdentifier : 'Admin' }}">
+                <a href="{{ path('staff_profile') }}" class="admin-user-chip" title="My Profile">
                     <span class="admin-user-avatar">{{ app.user ? app.user.userIdentifier|first|upper : 'A' }}</span>
                     <span class="admin-user-name">{{ app.user ? app.user.userIdentifier : 'Admin' }}</span>
-                </span>
+                </a>
                 <a href="{{ path('app_logout') }}" class="admin-topbar-icon" title="Log out">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </a>

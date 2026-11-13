@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
+use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
@@ -22,7 +23,7 @@ use Symfony\Component\Security\Http\SecurityRequestAttributes;
  * username or the email address, keep the legacy error message, and
  * land on the storefront after a successful login.
  */
-final class LoginFormAuthenticator extends AbstractAuthenticator
+final class LoginFormAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface
 {
     private const LOGIN_ROUTE = 'app_login';
 
@@ -77,6 +78,15 @@ final class LoginFormAuthenticator extends AbstractAuthenticator
         }
 
         return new RedirectResponse($this->urlGenerator->generate('homepage'));
+    }
+
+    /**
+     * Entry point for anonymous visitors hitting a protected page: send
+     * them to the login form instead of a bare 401.
+     */
+    public function start(Request $request, ?AuthenticationException $authException = null): RedirectResponse
+    {
+        return new RedirectResponse($this->urlGenerator->generate(self::LOGIN_ROUTE));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
