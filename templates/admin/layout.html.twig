@@ -2,6 +2,9 @@
 
 {% block title %}{% block admin_title %}Admin Control Center{% endblock %} | Orcullo Custom Controllers{% endblock %}
 
+{# Staff members share this panel shell, but see a reduced, role-aware menu. #}
+{% set staff_panel = is_granted('ROLE_STAFF') and not is_granted('ROLE_ADMIN') %}
+
 {# Admin pages render their own full-screen app shell; the storefront chrome is hidden on this section. #}
 {% block site_header %}{% endblock %}
 {% block site_footer %}{% endblock %}
@@ -19,16 +22,20 @@
             <img src="{{ asset('Assets/TextOnly.png') }}" class="admin-brand-text" alt="Orcullo Custom Controllers">
         </a>
 
-        <span class="admin-sidebar-label">Admin Menu</span>
+        <span class="admin-sidebar-label">{{ staff_panel ? 'Staff Menu' : 'Admin Menu' }}</span>
         <nav class="admin-sidebar-nav">
+            {% if is_granted('ROLE_ADMIN') %}
             <a href="{{ path('admin_dashboard') }}" class="admin-nav-item {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}">
                 <i class="fa-solid fa-chart-pie"></i>
                 <span>Overview</span>
             </a>
-            <a href="{{ path('admin_products') }}" class="admin-nav-item {{ app.request.attributes.get('_route') == 'admin_products' ? 'active' : '' }}">
+            {% endif %}
+            {% set products_route = staff_panel ? 'staff_products' : 'admin_products' %}
+            <a href="{{ path(products_route) }}" class="admin-nav-item {{ app.request.attributes.get('_route') in ['admin_products', 'staff_products', 'staff_edit_product'] ? 'active' : '' }}">
                 <i class="fa-solid fa-boxes-stacked"></i>
                 <span>Products</span>
             </a>
+            {% if is_granted('ROLE_ADMIN') %}
             <a href="{{ path('admin_users') }}" class="admin-nav-item {{ app.request.attributes.get('_route') == 'admin_users' ? 'active' : '' }}">
                 <i class="fa-solid fa-users"></i>
                 <span>Users</span>
@@ -37,6 +44,7 @@
                 <i class="fa-solid fa-receipt"></i>
                 <span>Orders</span>
             </a>
+            {% endif %}
         </nav>
 
         <div class="admin-sidebar-footer">
@@ -45,6 +53,12 @@
                 <i class="fa-solid fa-store"></i>
                 <span>View Store</span>
             </a>
+            {% if staff_panel %}
+            <a href="{{ path('app_account') }}" class="admin-nav-item">
+                <i class="fa-solid fa-id-badge"></i>
+                <span>My Account</span>
+            </a>
+            {% endif %}
         </div>
     </aside>
 
@@ -53,7 +67,7 @@
         <header class="admin-topbar">
             <div class="admin-topbar-heading">
                 <span class="admin-breadcrumb">
-                    <a href="{{ path('admin_dashboard') }}">Admin</a>
+                    <a href="{{ staff_panel ? path('staff_products') : path('admin_dashboard') }}">{{ staff_panel ? 'Staff' : 'Admin' }}</a>
                     <i class="fa-solid fa-angle-right"></i>
                     <span>{{ block('admin_title') }}</span>
                 </span>

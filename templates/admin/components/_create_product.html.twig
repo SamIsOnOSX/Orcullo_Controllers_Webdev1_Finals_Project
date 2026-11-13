@@ -25,7 +25,11 @@
         <div class="form-row">
             <div class="form-group flex-1">
                 <label for="product_image"><i class="fa-solid fa-upload label-icon"></i> Upload Product Image (PNG, JPG, WEBP)</label>
-                <input type="file" id="product_image" name="product_image" accept="image/*">
+                <label class="file-pick-label" title="Choose an image file">
+                    <i class="fa-solid fa-paperclip"></i>
+                    <span class="file-pick-text">Choose image file&hellip;</span>
+                    <input type="file" id="product_image" name="product_image" accept=".jpg,.jpeg,.png,.webp,.gif" class="file-pick-input" onchange="this.previousElementSibling.textContent = this.files[0] ? this.files[0].name : 'Choose image file…';">
+                </label>
             </div>
             <div class="form-group flex-1">
                 <label for="existing_asset"><i class="fa-solid fa-images label-icon"></i> Or Choose Existing Asset</label>

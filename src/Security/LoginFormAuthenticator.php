@@ -63,6 +63,19 @@ final class LoginFormAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        /** @var \App\Entity\User $user */
+        $user = $token->getUser();
+
+        // Role-based landing: admins open the admin dashboard, staff their
+        // own panel, customers stay on the storefront.
+        if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+            return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
+        }
+
+        if (in_array('ROLE_STAFF', $user->getRoles(), true)) {
+            return new RedirectResponse($this->urlGenerator->generate('staff_products'));
+        }
+
         return new RedirectResponse($this->urlGenerator->generate('homepage'));
     }
 

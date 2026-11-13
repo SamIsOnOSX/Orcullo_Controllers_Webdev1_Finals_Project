@@ -1,0 +1,49 @@
+<div class="dashboard-card">
+    <h3><i class="fa-solid fa-plus-circle card-icon"></i>Create New Product</h3>
+    <form method="POST" action="{{ path('staff_create_product') }}" enctype="multipart/form-data">
+        <input type="hidden" name="_token" value="{{ csrf_token('staff_create_product') }}">
+        <div class="form-row">
+            <div class="form-group flex-2">
+                <label for="staff_prod_name">Product Name *</label>
+                <input type="text" id="staff_prod_name" name="name" placeholder="e.g. Orcullo HitBox Pro" required>
+            </div>
+            <div class="form-group flex-1">
+                <label for="staff_prod_price">Price ($) *</label>
+                <input type="number" id="staff_prod_price" name="price" step="0.01" min="0" placeholder="e.g. 199.99" required>
+            </div>
+            <div class="form-group flex-1">
+                <label for="staff_prod_stock">Initial Stock *</label>
+                <input type="number" id="staff_prod_stock" name="stock" min="0" value="10" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="staff_prod_description">Description</label>
+            <textarea id="staff_prod_description" name="description" placeholder="Product features, layout specifications, compatibility..."></textarea>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group flex-1">
+                <label for="staff_product_image"><i class="fa-solid fa-upload label-icon"></i> Upload Product Image (PNG, JPG, WEBP)</label>
+                <label class="file-pick-label" title="Choose an image file">
+                    <i class="fa-solid fa-paperclip"></i>
+                    <span class="file-pick-text">Choose image file&hellip;</span>
+                    <input type="file" id="staff_product_image" name="product_image" accept=".jpg,.jpeg,.png,.webp,.gif" class="file-pick-input" onchange="this.previousElementSibling.textContent = this.files[0] ? this.files[0].name : 'Choose image file…';">
+                </label>
+            </div>
+            <div class="form-group flex-1">
+                <label for="staff_existing_asset"><i class="fa-solid fa-images label-icon"></i> Or Choose Existing Asset</label>
+                <select id="staff_existing_asset" name="existing_asset">
+                    <option value="">-- Choose from Assets library (optional) --</option>
+                    {% for assetPath in available_assets %}
+                        <option value="{{ assetPath }}">{{ assetPath|split('/')|last }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" name="create_product" class="btn-primary btn-create-product">
+            <i class="fa-solid fa-floppy-disk"></i> Save Product
+        </button>
+    </form>
+</div>

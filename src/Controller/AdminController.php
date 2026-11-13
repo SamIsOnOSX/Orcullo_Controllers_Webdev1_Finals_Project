@@ -54,6 +54,7 @@ final class AdminController extends AbstractController
         return $this->render('admin/dashboard.html.twig', [
             'total_products' => $this->productRepository->count([]),
             'total_users' => $this->userRepository->count([]),
+            'total_staff' => $this->userRepository->count(['role' => User::ROLE_STAFF]),
             'total_orders' => $this->orderRepository->countAll(),
             'total_revenue' => $this->orderRepository->sumTotalAmount(),
             'recent_orders' => array_slice($this->orderRepository->findAllNewestFirst(), 0, 5),
@@ -176,7 +177,7 @@ final class AdminController extends AbstractController
 
         if (!$this->isCsrfTokenValid('admin_update_user', (string) $request->request->get('_token'))) {
             $error = 'Your session expired. Please try again.';
-        } elseif (!in_array($role, [User::ROLE_CUSTOMER, User::ROLE_ADMIN], true)) {
+        } elseif (!in_array($role, [User::ROLE_CUSTOMER, User::ROLE_STAFF, User::ROLE_ADMIN], true)) {
             $error = 'Invalid role selected.';
         } elseif ($targetId <= 0 || $username === '' || $email === '') {
             $error = 'Username and email cannot be empty.';
@@ -194,6 +195,46 @@ final class AdminController extends AbstractController
 
                 return $this->redirectToRoute('admin_users');
             }
+        }
+
+        $this->addFlash('admin_error', $error);
+
+        return $this->redirectToRoute('admin_users');
+    }
+
+    /**
+     * Creates a new customer, staff or admin account (legacy lacked this;
+     * required so admins can create the staff accounts).
+     */
+    #[Route('/users/create', name: 'admin_create_user', methods: ['POST'])]
+    public function createUser(Request $request): RedirectResponse
+    {
+        $username = trim((string) $request->request->get('username', ''));
+        $email = trim((string) $request->request->get('email', ''));
+        $password = (string) $request->request->get('password', '');
+        $role = strtolower(trim((string) $request->request->get('role', 'customer')));
+
+        if (!$this->isCsrfTokenValid('admin_create_user', (string) $request->request->get('_token'))) {
+            $error = 'Your session expired. Please try again.';
+        } elseif (!in_array($role, [User::ROLE_CUSTOMER, User::ROLE_STAFF, User::ROLE_ADMIN], true)) {
+            $error = 'Invalid role selected.';
+        } elseif ($username === '' || $email === '') {
+            $error = 'Username and email are required.';
+        } elseif (strlen($password) < 6) {
+            $error = 'Password must be at least 6 characters.';
+        } elseif ($this->userRepository->existsByUsernameOrEmailExcluding($username, $email)) {
+            $error = 'That username or email is already taken.';
+        } else {
+            $user = new User();
+            $user->setUsername($username);
+            $user->setEmail($email);
+            $user->setRole($role);
+            $user->setPassword($this->passwordHasher->hashPassword($user, $password));
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+            $this->addFlash('admin_message', ucfirst($role) . " account '$username' was successfully created!");
+
+            return $this->redirectToRoute('admin_users');
         }
 
         $this->addFlash('admin_error', $error);

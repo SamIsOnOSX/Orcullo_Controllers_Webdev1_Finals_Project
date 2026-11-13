@@ -22,9 +22,14 @@ security:
                 path: app_logout
                 target: homepage
 
+    # Admins automatically inherit every staff permission.
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_STAFF
+
     # Note: Only the *first* matching rule is applied
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/staff, roles: ROLE_STAFF }
 
 when@test:
     security:

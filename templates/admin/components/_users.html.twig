@@ -1,3 +1,34 @@
+<div class="dashboard-card">
+    <h3><i class="fa-solid fa-user-plus card-icon"></i>Create New User Account</h3>
+    <p class="admin-section-note"><i class="fa-solid fa-circle-info"></i> Staff accounts can only manage the products they create.</p>
+    <form method="POST" action="{{ path('admin_create_user') }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('admin_create_user') }}">
+        <div class="form-row">
+            <div class="form-group flex-1">
+                <label for="cu_username">Username *</label>
+                <input type="text" id="cu_username" name="username" placeholder="e.g. staff_juan" required>
+            </div>
+            <div class="form-group flex-1">
+                <label for="cu_email">Email *</label>
+                <input type="email" id="cu_email" name="email" placeholder="e.g. juan@orcullo.com" required>
+            </div>
+            <div class="form-group flex-1">
+                <label for="cu_password">Password *</label>
+                <input type="password" id="cu_password" name="password" placeholder="Min. 6 characters" minlength="6" required autocomplete="new-password">
+            </div>
+            <div class="form-group">
+                <label for="cu_role">Role</label>
+                <select id="cu_role" name="role">
+                    <option value="customer">Customer</option>
+                    <option value="staff">Staff</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" name="create_user" class="btn-save-user"><i class="fa-solid fa-user-plus"></i> Create Account</button>
+    </form>
+</div>
+
 <div class="dashboard-card table-responsive">
     <div class="card-header-bar">
         <h3><i class="fa-solid fa-users card-icon"></i>Manage Users ({{ users|length }})</h3>
@@ -26,6 +57,7 @@
                     <td>
                         <select name="role" form="user-form-{{ u.id }}" class="table-select">
                             <option value="customer" {{ u.role == 'customer' ? 'selected' : '' }}>Customer</option>
+                            <option value="staff" {{ u.role == 'staff' ? 'selected' : '' }}>Staff</option>
                             <option value="admin" {{ u.role == 'admin' ? 'selected' : '' }}>Admin</option>
                         </select>
                     </td>
@@ -57,6 +89,26 @@
                         <span class="user-pwd-role-badge admin-pwd-badge"><i class="fa-solid fa-shield-halved"></i> Admin</span>
                     </div>
                     <div class="user-pwd-locked-msg"><i class="fa-solid fa-lock"></i> Password protected</div>
+                </div>
+            {% elseif u.role == 'staff' %}
+                <div class="user-pwd-row">
+                    <div class="user-pwd-identity">
+                        <span class="user-pwd-name">{{ u.username }}</span>
+                        <span class="user-pwd-role-badge staff-pwd-badge"><i class="fa-solid fa-user-gear"></i> Staff</span>
+                    </div>
+                    <form method="POST" action="{{ path('admin_change_password') }}" class="user-pwd-form">
+                        <input type="hidden" name="_token" value="{{ csrf_token('admin_change_password') }}">
+                        <input type="hidden" name="user_id" value="{{ u.id }}">
+                        <div class="pwd-input-wrap">
+                            <input type="password" name="new_password" placeholder="New password (min. 6 chars)" class="input-new-pwd" minlength="6" required autocomplete="new-password">
+                            <button type="button" class="pwd-toggle-btn" onclick="togglePasswordSibling(this)" aria-label="Toggle password visibility">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        <button type="submit" name="admin_change_password" class="btn-change-pwd">
+                            <i class="fa-solid fa-floppy-disk"></i> Set Password
+                        </button>
+                    </form>
                 </div>
             {% else %}
                 <div class="user-pwd-row">

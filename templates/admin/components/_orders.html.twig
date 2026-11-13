@@ -103,7 +103,7 @@
                                     <label class="proof-file-label" title="Choose file">
                                         <i class="fa-solid fa-paperclip"></i>
                                         <span class="proof-file-text">Choose file</span>
-                                        <input type="file" name="payment_proof" accept=".jpg,.jpeg,.png,.webp,.pdf" class="proof-upload-input" required onchange="this.previousElementSibling.textContent = this.files[0] ? this.files[0].name : 'Choose file'; this.closest('form').querySelector('.btn-proof-upload').classList.add('ready');">
+                                        <input type="file" name="payment_proof" accept=".jpg,.jpeg,.png,.webp,.pdf" class="proof-upload-input" onchange="this.previousElementSibling.textContent = this.files[0] ? this.files[0].name : 'Choose file'; this.closest('form').querySelector('.btn-proof-upload').classList.add('ready');">
                                     </label>
                                     <button type="submit" name="upload_proof" class="btn-proof-upload" title="Upload and save proof">
                                         <i class="fa-solid fa-cloud-arrow-up"></i> {{ order.paymentProof ? 'Replace' : 'Upload' }}

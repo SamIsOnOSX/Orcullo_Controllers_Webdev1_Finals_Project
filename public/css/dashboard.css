@@ -668,6 +668,12 @@
     background-color: rgba(255, 255, 255, 0.03);
 }
 
+/* Keep Date and Total Amount on one line (they were wrapping into 3 rows). */
+.order-table td:nth-child(3),
+.order-table td:nth-child(4) {
+    white-space: nowrap;
+}
+
 .order-id-tag {
     font-family: var(--font-heading, 'Space Grotesk', sans-serif);
     font-weight: 700;
@@ -1538,7 +1544,8 @@
     box-sizing: border-box;
 }
 
-.proof-file-label {
+.proof-file-label,
+.file-pick-label {
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -1560,25 +1567,29 @@
     white-space: nowrap;
 }
 
-.proof-file-label:hover {
+.proof-file-label:hover,
+.file-pick-label:hover {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 155, 68, 0.5);
     color: #f1f5f9;
 }
 
-.proof-file-label i {
+.proof-file-label i,
+.file-pick-label i {
     font-size: 0.72rem;
     color: #ff9b44;
     flex-shrink: 0;
 }
 
-.proof-file-text {
+.proof-file-text,
+.file-pick-text {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.proof-upload-input {
+.proof-upload-input,
+.file-pick-input {
     position: absolute;
     width: 0.1px;
     height: 0.1px;
@@ -1637,6 +1648,92 @@
     flex-direction: column;
     align-items: center;
     gap: 6px;
+}
+
+/* ------------------------------------------------------------------
+ * Staff panel (limited record management)
+ * ------------------------------------------------------------------ */
+
+.stat-card--staff .stat-icon { background: rgba(52, 211, 153, 0.14); border-color: rgba(52, 211, 153, 0.35); color: #34d399; }
+
+.staff-edit-card h3 {
+    color: #34d399;
+}
+
+.staff-edit-thumb {
+    width: 84px;
+    height: 84px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.staff-table-thumb {
+    width: 46px;
+    height: 46px;
+    object-fit: cover;
+    border-radius: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.staff-table-name {
+    font-weight: 600;
+    color: #f1f5f9;
+}
+
+.staff-action-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.owner-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 6px;
+    padding: 2px 8px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    border-radius: 20px;
+}
+
+.owner-badge--you {
+    background: rgba(52, 211, 153, 0.14);
+    border: 1px solid rgba(52, 211, 153, 0.4);
+    color: #34d399;
+}
+
+.owner-badge--you i {
+    font-size: 0.6rem;
+}
+
+.shop-owner-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #94a3b8;
+    font-size: 0.78rem;
+}
+
+.shop-owner-badge i {
+    font-size: 0.7rem;
+    color: #ff9b44;
+}
+
+.record-locked {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #555;
+    font-size: 0.75rem;
+}
+
+.staff-pwd-badge {
+    background: rgba(52, 211, 153, 0.14);
+    border: 1px solid rgba(52, 211, 153, 0.4);
+    color: #34d399;
 }
 
 /* ═══════════════════════════════════════════════════════════

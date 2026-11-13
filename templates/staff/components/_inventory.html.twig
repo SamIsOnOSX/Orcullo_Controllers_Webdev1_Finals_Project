@@ -1,0 +1,65 @@
+<div class="dashboard-card table-responsive">
+    <h3><i class="fa-solid fa-boxes-stacked card-icon"></i>Product Catalog ({{ products|length }})</h3>
+    {% if products is empty %}
+        <div class="empty-state-box">
+            <i class="fa-solid fa-box-open empty-icon"></i>
+            <p class="empty-text">No products have been created yet.</p>
+        </div>
+    {% else %}
+        <table class="order-table staff-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Added By</th>
+                    <th>Added On</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    {% set is_mine = product.createdBy and app.user and product.createdBy.id == app.user.id %}
+                    <tr>
+                        <td><span class="order-id-tag">#{{ product.id }}</span></td>
+                        <td><img src="{{ asset(product.imagePath) }}" alt="{{ product.name }}" class="staff-table-thumb"></td>
+                        <td>
+                            <span class="staff-table-name">{{ product.name }}</span>
+                            {% if is_mine %}<span class="owner-badge owner-badge--you"><i class="fa-solid fa-user-check"></i> Yours</span>{% endif %}
+                        </td>
+                        <td><span class="price-cell">${{ product.price|number_format(2) }}</span></td>
+                        <td>{{ product.stock }}</td>
+                        <td>
+                            {% if product.createdBy %}
+                                {{ product.createdBy.username }}
+                            {% else %}
+                                <span class="shop-owner-badge"><i class="fa-solid fa-store"></i> Shop (Admin)</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ product.createdAt ? product.createdAt|date('M j, Y') : '-' }}</td>
+                        <td class="action-cell">
+                            {% if is_mine %}
+                                <div class="staff-action-row">
+                                    <a href="{{ path('staff_edit_product', { id: product.id }) }}" class="btn-save-user" title="Edit your product">
+                                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                                    </a>
+                                    <form method="POST" action="{{ path('staff_delete_product') }}" class="inline-form" onsubmit="return confirm('Are you sure you want to delete \'{{ product.name|e('js') }}\'?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('staff_delete_product') }}">
+                                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                                        <button type="submit" name="delete_product" class="btn-delete">
+                                            <i class="fa-solid fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            {% else %}
+                                <span class="record-locked"><i class="fa-solid fa-lock"></i> No access</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>

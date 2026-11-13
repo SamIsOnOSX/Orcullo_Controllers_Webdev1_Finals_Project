@@ -17,6 +17,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     public const ROLE_CUSTOMER = 'customer';
+    public const ROLE_STAFF = 'staff';
     public const ROLE_ADMIN = 'admin';
 
     #[ORM\Id]
@@ -136,9 +137,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /** @return list<string> */
     public function getRoles(): array
     {
-        return $this->role === self::ROLE_ADMIN
-            ? ['ROLE_ADMIN', 'ROLE_USER']
-            : ['ROLE_USER'];
+        return match ($this->role) {
+            self::ROLE_ADMIN => ['ROLE_ADMIN', 'ROLE_USER'],
+            self::ROLE_STAFF => ['ROLE_STAFF', 'ROLE_USER'],
+            default => ['ROLE_USER'],
+        };
     }
 
     public function eraseCredentials(): void
@@ -149,5 +152,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function isAdmin(): bool
     {
         return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->role === self::ROLE_STAFF;
     }
 }

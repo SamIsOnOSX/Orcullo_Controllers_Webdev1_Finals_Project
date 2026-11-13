@@ -1,0 +1,18 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}Products{% endblock %}
+
+{% block admin_content %}
+    <div class="dashboard-page-intro">
+        <p class="admin-section-note">
+            <i class="fa-solid fa-circle-info"></i>
+            Staff panel — you can create new products and edit or remove <strong>only the ones you created</strong>.
+            Shop-owned records (added by admins) are read-only for staff.
+        </p>
+    </div>
+    {% include 'staff/components/_create_product.html.twig' %}
+    {% if edit_product %}
+        {% include 'staff/components/_edit_product.html.twig' %}
+    {% endif %}
+    {% include 'staff/components/_inventory.html.twig' %}
+{% endblock %}

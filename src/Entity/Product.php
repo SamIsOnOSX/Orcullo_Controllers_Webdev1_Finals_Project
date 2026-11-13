@@ -32,6 +32,15 @@ class Product
     #[ORM\Column(name: 'created_at', type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeImmutable $createdAt = null;
 
+    /**
+     * Staff ownership for the limited record-management rules:
+     * staff may edit/delete only the products they created themselves.
+     * NULL means the record belongs to the shop (admin/seed data).
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'created_by', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $createdBy = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -106,5 +115,23 @@ class Product
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /** Staff ownership helper: records with no owner are admin/shop records. */
+    public function isOwnedBy(User $user): bool
+    {
+        return $this->createdBy !== null && $this->createdBy->getId() === $user->getId();
     }
 }
