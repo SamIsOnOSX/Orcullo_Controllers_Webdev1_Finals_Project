@@ -103,12 +103,12 @@
 
 <div class="dashboard-card">
     <div class="card-header-bar">
-        <h3><i class="fa-solid fa-key card-icon"></i>Change Customer Passwords</h3>
+        <h3><i class="fa-solid fa-key card-icon"></i>Reset Account Passwords</h3>
     </div>
-    <p class="admin-section-note"><i class="fa-solid fa-circle-info"></i> Reset password for customer accounts.</p>
+    <p class="admin-section-note"><i class="fa-solid fa-circle-info"></i> Reset passwords for customer and staff accounts &mdash; and your own (it takes effect next time you sign in).</p>
     <div class="user-pwd-grid">
         {% for u in users %}
-            {% if u.role == 'admin' %}
+            {% if u.role == 'admin' and u.id != app.user.id %}
                 <div class="user-pwd-row user-pwd-row--locked">
                     <div class="user-pwd-identity">
                         <span class="user-pwd-name">{{ u.username }}</span>
@@ -140,7 +140,12 @@
                 <div class="user-pwd-row">
                     <div class="user-pwd-identity">
                         <span class="user-pwd-name">{{ u.username }}</span>
-                        <span class="user-pwd-role-badge customer-pwd-badge"><i class="fa-solid fa-user"></i> Customer</span>
+                        {% if u.role == 'admin' %}
+                            <span class="user-pwd-role-badge admin-pwd-badge"><i class="fa-solid fa-shield-halved"></i> Admin</span>
+                            <span class="user-pwd-self-badge"><i class="fa-solid fa-user-check"></i> This is you</span>
+                        {% else %}
+                            <span class="user-pwd-role-badge customer-pwd-badge"><i class="fa-solid fa-user"></i> Customer</span>
+                        {% endif %}
                     </div>
                     <form method="POST" action="{{ path('admin_change_password') }}" class="user-pwd-form">
                         <input type="hidden" name="_token" value="{{ csrf_token('admin_change_password') }}">

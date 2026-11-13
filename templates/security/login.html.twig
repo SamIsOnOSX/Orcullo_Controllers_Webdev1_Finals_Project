@@ -33,6 +33,15 @@
             </div>
         {% endif %}
 
+        {% for message in app.flashes('admin_message') %}
+            <div class="success-box">
+                <i class="fa-solid fa-circle-check success-icon"></i>
+                <div class="success-messages">
+                    <p>{{ message }}</p>
+                </div>
+            </div>
+        {% endfor %}
+
         <form method="POST" action="{{ path('app_login') }}" class="auth-form">
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 

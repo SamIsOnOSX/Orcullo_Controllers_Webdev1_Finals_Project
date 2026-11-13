@@ -393,11 +393,18 @@ final class AdminController extends AbstractController
 
             if ($target === null) {
                 $error = "User #$targetId not found.";
-            } elseif ($target->getRole() === User::ROLE_ADMIN) {
+            } elseif ($target->getRole() === User::ROLE_ADMIN && $target->getId() !== $this->getUser()->getId()) {
                 $error = "You cannot change another admin's password.";
             } else {
                 $target->setPassword($this->passwordHasher->hashPassword($target, $newPassword));
                 $this->entityManager->flush();
+
+                if ($target->getId() === $this->getUser()->getId()) {
+                    $this->addFlash('admin_message', 'Your password has been updated. It takes effect the next time you sign in.');
+
+                    return $this->redirectToRoute('admin_users');
+                }
+
                 $this->addFlash('admin_message', "Password for User #$targetId has been updated.");
 
                 return $this->redirectToRoute('admin_users');

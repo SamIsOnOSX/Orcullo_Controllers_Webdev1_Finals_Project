@@ -108,6 +108,29 @@
     margin-bottom: 22px;
 }
 
+/* Success/notice flash shown on the login page (e.g. after changing your own password) */
+.success-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: rgba(6, 78, 59, 0.45);
+    border: 1px solid #2ecc71;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 22px;
+}
+
+.success-box i {
+    color: #2ecc71;
+    margin-top: 3px;
+}
+
+.success-box p {
+    margin: 0;
+    color: #d1fae5;
+    font-size: 0.85rem;
+}
+
 .error-icon {
     color: #f87171;
     font-size: 1.1rem;
