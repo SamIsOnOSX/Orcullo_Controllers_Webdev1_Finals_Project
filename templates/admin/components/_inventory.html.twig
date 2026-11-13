@@ -51,13 +51,18 @@
                             </form>
                         </td>
                         <td class="text-right">
-                            <form method="POST" action="{{ path('admin_delete_product') }}" class="inline-form" onsubmit="return confirm('Are you sure you want to delete \'{{ product.name|e('js') }}\'?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('admin_delete_product') }}">
-                                <input type="hidden" name="product_id" value="{{ product.id }}">
-                                <button type="submit" name="delete_product" class="btn-delete">
-                                    <i class="fa-solid fa-trash"></i> Delete
-                                </button>
-                            </form>
+                            <div class="user-action-row">
+                                <a href="{{ path('admin_edit_product', { id: product.id }) }}" class="btn-save-user" title="Edit this product">
+                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                                </a>
+                                <form method="POST" action="{{ path('admin_delete_product') }}" class="inline-form" onsubmit="return confirm('Are you sure you want to delete \'{{ product.name|e('js') }}\'?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('admin_delete_product') }}">
+                                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                                    <button type="submit" name="delete_product" class="btn-delete">
+                                        <i class="fa-solid fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 {% endfor %}

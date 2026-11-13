@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -72,6 +73,7 @@ final class AdminController extends AbstractController
         return $this->render('admin/products.html.twig', [
             'products' => $this->productRepository->searchProducts($q),
             'available_assets' => $this->getAvailableAssets(),
+            'edit_product' => null,
             'search_q' => $q,
         ]);
     }
@@ -109,10 +111,47 @@ final class AdminController extends AbstractController
     #[Route('/products/create', name: 'admin_create_product', methods: ['POST'])]
     public function createProduct(Request $request): RedirectResponse
     {
-        [$message, $error] = $this->processCreateProduct($request);
+        [$message, $error] = $this->processProductForm($request, new Product(), true);
         $flashKey = $error !== null ? 'admin_error' : 'admin_message';
 
         $this->addFlash($flashKey, $error ?? $message);
+
+        return $this->redirectToRoute('admin_products');
+    }
+
+    /** Edit form for ANY product record (admin full data access). */
+    #[Route('/products/{id}/edit', name: 'admin_edit_product', methods: ['GET'])]
+    public function editProduct(int $id): Response
+    {
+        $product = $this->productRepository->find($id);
+
+        if ($product === null) {
+            throw new AccessDeniedException('This product record does not exist.');
+        }
+
+        return $this->render('admin/products.html.twig', [
+            'products' => $this->productRepository->findAllNewestFirst(),
+            'available_assets' => $this->getAvailableAssets(),
+            'edit_product' => $product,
+        ]);
+    }
+
+    /** Saves edits to ANY product record (admin full data access). */
+    #[Route('/products/update', name: 'admin_update_product', methods: ['POST'])]
+    public function updateProduct(Request $request): RedirectResponse
+    {
+        $productId = (int) $request->request->get('product_id', 0);
+        $product = $this->productRepository->find($productId);
+
+        if ($product === null) {
+            $this->addFlash('admin_error', "Failed to update product #$productId.");
+
+            return $this->redirectToRoute('admin_products');
+        }
+
+        [$message, $error] = $this->processProductForm($request, $product, false);
+
+        $this->addFlash($error !== null ? 'admin_error' : 'admin_message', $error ?? $message);
 
         return $this->redirectToRoute('admin_products');
     }
@@ -466,13 +505,21 @@ final class AdminController extends AbstractController
     /**
      * @return array{0: string, 1: string|null} [success message, error message]
      */
-    private function processCreateProduct(Request $request): array
+    /**
+     * Shared create/update processor for admin product records. Admins may
+     * edit ANY record (shop-owned or staff-created) - no ownership check
+     * here by design, unlike the staff panel.
+     */
+    private function processProductForm(Request $request, Product $product, bool $isCreate): array
     {
         $name = trim((string) $request->request->get('name', ''));
         $description = trim((string) $request->request->get('description', ''));
         $priceInput = (string) $request->request->get('price', '');
         $stockInput = (string) $request->request->get('stock', '');
 
+        if (!$this->isCsrfTokenValid($isCreate ? 'admin_create_product' : 'admin_update_product', (string) $request->request->get('_token'))) {
+            return ['', 'Your session expired. Please try again.'];
+        }
         if ($name === '') {
             return ['', 'Product name is required.'];
         }
@@ -492,25 +539,30 @@ final class AdminController extends AbstractController
             if ($error !== null) {
                 return ['', $error];
             }
-        } elseif (trim((string) $request->request->get('existing_asset', '')) !== '') {
-            $imagePath = trim((string) $request->request->get('existing_asset'));
+            $product->setImagePath($imagePath);
+        } elseif ($isCreate && trim((string) $request->request->get('existing_asset', '')) !== '') {
+            $product->setImagePath(trim((string) $request->request->get('existing_asset')));
         }
 
-        if ($imagePath === '') {
+        if ($product->getImagePath() === '') {
             return ['', 'Please provide a product image (upload an image or select an existing asset).'];
         }
 
-        $product = new Product();
         $product->setName($name);
         $product->setDescription($description !== '' ? $description : null);
         $product->setPrice(number_format((float) $priceInput, 2, '.', ''));
         $product->setStock((int) $stockInput);
-        $product->setImagePath($imagePath);
 
-        $this->entityManager->persist($product);
+        if ($isCreate) {
+            // Admin-created records are shop-owned (created_by stays NULL).
+            $this->entityManager->persist($product);
+        }
+
         $this->entityManager->flush();
 
-        return ["Product '$name' was successfully created!", null];
+        return $isCreate
+            ? ["Product '$name' was successfully created!", null]
+            : ["Product '$name' was successfully updated.", null];
     }
 
     /**
