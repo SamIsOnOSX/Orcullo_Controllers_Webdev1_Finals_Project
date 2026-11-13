@@ -2,12 +2,14 @@
     <div class="card-header-bar">
         <h3><i class="fa-solid fa-users card-icon"></i>Manage Users ({{ users|length }})</h3>
     </div>
+    <div class="scroll-top-wrapper">
     <table class="order-table">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Username</th>
                 <th>Email</th>
+                <th>Address</th>
                 <th>Role</th>
                 <th>Action</th>
             </tr>
@@ -18,6 +20,9 @@
                     <td><span class="order-id-tag">#{{ u.id }}</span></td>
                     <td><input type="text" name="username" value="{{ u.username }}" form="user-form-{{ u.id }}" class="input-user-name"></td>
                     <td><input type="email" name="email" value="{{ u.email }}" form="user-form-{{ u.id }}" class="input-user-email"></td>
+                    <td>
+                        <input type="text" name="address" value="{{ u.address }}" placeholder="No address set" form="user-form-{{ u.id }}" class="input-user-address">
+                    </td>
                     <td>
                         <select name="role" form="user-form-{{ u.id }}" class="table-select">
                             <option value="customer" {{ u.role == 'customer' ? 'selected' : '' }}>Customer</option>
@@ -35,6 +40,7 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>{# /.scroll-top-wrapper #}
 </div>
 
 <div class="dashboard-card">

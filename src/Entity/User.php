@@ -30,6 +30,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'email', type: 'string', length: 255, unique: true)]
     private string $email = '';
 
+    #[ORM\Column(name: 'address', type: 'text', nullable: true)]
+    private ?string $address = null;
+
     #[ORM\Column(name: 'password', type: 'string', length: 255)]
     private string $password = '';
 
@@ -69,6 +72,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): static
+    {
+        $this->address = $address;
 
         return $this;
     }

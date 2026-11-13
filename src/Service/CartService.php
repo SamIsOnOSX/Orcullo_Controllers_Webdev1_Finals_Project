@@ -73,6 +73,25 @@ final class CartService
     }
 
     /**
+     * Adds a custom controller configuration from the customizer.
+     */
+    public function addCustomItem(string $type, string $buttonColor, float $price, string $artworkPath = '', int $quantity = 1): void
+    {
+        $items = (array) $this->session()->get(self::SESSION_KEY, []);
+
+        $items[] = [
+            'product_id' => null,
+            'type' => $type,
+            'button_color' => $buttonColor,
+            'price' => $price,
+            'quantity' => max(1, $quantity),
+            'artwork_path' => $artworkPath,
+        ];
+
+        $this->session()->set(self::SESSION_KEY, $items);
+    }
+
+    /**
      * Updates the quantity of a cart line (removes it when <= 0). Caps the
      * quantity to the product's stock when a product array is provided.
      * Returns an error message, or null on success.

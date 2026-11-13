@@ -14,10 +14,16 @@
             <p>Tailor your controller's type, button color, and custom top artwork.</p>
         </div>
 
-        {# Backend not wired yet — stub form, same pattern as the shop/admin stubs. #}
+        {% for msg in app.flashes('customize_error') %}
+            <div class="error-box">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>{{ msg }}</span>
+            </div>
+        {% endfor %}
+
         <div class="customizer-card">
-            <form onsubmit="return false;" enctype="multipart/form-data" class="customizer-form">
-                <input type="hidden" name="add_to_cart_custom" value="1">
+            <form method="POST" action="{{ path('customize') }}" enctype="multipart/form-data" class="customizer-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('customize_controller') }}">
 
                 <div class="input-group">
                     <label for="controller_type">
@@ -49,16 +55,95 @@
                         <i class="fa-solid fa-image input-icon"></i> Upload Custom Artwork <span class="optional-tag">(Optional)</span>
                     </label>
                     <div class="file-upload-wrapper">
-                        <input type="file" id="custom_artwork" name="custom_artwork" accept="image/*">
+                        <label for="custom_artwork" class="artwork-dropzone" id="artwork_dropzone">
+                            <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+                            <div class="dropzone-text">
+                                <span class="dropzone-main-text" id="dropzone_filename">Click or drag & drop artwork image here</span>
+                                <span class="dropzone-sub-text">PNG, JPG, or WEBP (Max 10 MB)</span>
+                            </div>
+                            <input type="file" id="custom_artwork" name="custom_artwork" accept=".jpg,.jpeg,.png,.webp,image/png,image/jpeg,image/webp" class="artwork-file-input">
+                        </label>
+                        <div id="artwork_preview_wrapper" class="artwork-preview-wrapper" style="display: none;">
+                            <img id="artwork_preview" src="" alt="Artwork preview" class="artwork-preview-img">
+                            <div class="artwork-preview-info">
+                                <span id="artwork_preview_name" class="artwork-preview-name"></span>
+                                <button type="button" id="artwork_remove_btn" class="artwork-remove-btn" title="Remove artwork">
+                                    <i class="fa-solid fa-xmark"></i> Remove
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <span class="input-hint">Supports PNG, JPG, or WEBP high-resolution layout artwork.</span>
+                    <span class="input-hint">We'll print and cut your artwork for the acrylic top panel.</span>
                 </div>
 
-                <button type="button" class="btn-submit-custom">
+                <button type="submit" class="btn-submit-custom">
                     <i class="fa-solid fa-cart-plus"></i> Save and Add to Cart
                 </button>
             </form>
         </div>
     </main>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('custom_artwork');
+    const dropzone = document.getElementById('artwork_dropzone');
+    const previewWrapper = document.getElementById('artwork_preview_wrapper');
+    const previewImg = document.getElementById('artwork_preview');
+    const previewName = document.getElementById('artwork_preview_name');
+    const removeBtn = document.getElementById('artwork_remove_btn');
+
+    if (!fileInput || !dropzone) return;
+
+    fileInput.addEventListener('change', function() {
+        handleFiles(this.files);
+    });
+
+    // Drag and drop highlights
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropzone.addEventListener(eventName, function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.add('drag-over');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.remove('drag-over');
+        });
+    });
+
+    dropzone.addEventListener('drop', function(e) {
+        if (e.dataTransfer && e.dataTransfer.files.length) {
+            fileInput.files = e.dataTransfer.files;
+            handleFiles(fileInput.files);
+        }
+    });
+
+    function handleFiles(files) {
+        if (files && files[0]) {
+            const file = files[0];
+            previewName.textContent = file.name;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewWrapper.style.display = 'flex';
+                dropzone.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    removeBtn.addEventListener('click', function() {
+        fileInput.value = '';
+        previewImg.src = '';
+        previewWrapper.style.display = 'none';
+        dropzone.style.display = 'flex';
+    });
+});
+</script>
 {% endblock %}

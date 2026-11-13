@@ -69,6 +69,11 @@ final class CheckoutController extends AbstractController
             return $this->setCheckoutError($request, 'Your session expired. Please try again.');
         }
 
+        $shippingAddress = trim((string) $request->request->get('shipping_address', ''));
+        if ($shippingAddress === '') {
+            return $this->setCheckoutError($request, 'Please provide a delivery address for your order.');
+        }
+
         $paymentMethod = $request->request->get('payment_method') === 'online'
             ? Order::PAYMENT_ONLINE
             : Order::PAYMENT_COD;
@@ -77,6 +82,14 @@ final class CheckoutController extends AbstractController
         try {
             if ($paymentMethod === Order::PAYMENT_ONLINE) {
                 $paymentProof = $this->storeProofOfPayment($request);
+            }
+
+            // Also update the user's default address on profile if they don't have one set yet
+            /** @var \App\Entity\User|null $user */
+            $user = $this->getUser();
+            if ($user && empty($user->getAddress())) {
+                $user->setAddress($shippingAddress);
+                $this->entityManager->persist($user);
             }
 
             $totalPrice = $this->cartService->getTotal();
@@ -115,6 +128,7 @@ final class CheckoutController extends AbstractController
                 $order->setTotalAmount(number_format($totalPrice, 2, '.', ''));
                 $order->setPaymentMethod($paymentMethod);
                 $order->setPaymentProof($paymentProof);
+                $order->setShippingAddress($shippingAddress);
                 $this->entityManager->persist($order);
 
                 // 3. Save one order_item per purchased unit and reduce stock.

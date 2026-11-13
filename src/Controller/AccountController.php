@@ -62,6 +62,7 @@ final class AccountController extends AbstractController
     {
         $newUsername = trim((string) $request->request->get('username', ''));
         $newEmail = trim((string) $request->request->get('email', ''));
+        $newAddress = trim((string) $request->request->get('address', ''));
 
         if ($newUsername === '' || $newEmail === '') {
             return ['', 'Username and email cannot be blank.'];
@@ -73,6 +74,7 @@ final class AccountController extends AbstractController
 
         $user->setUsername($newUsername);
         $user->setEmail($newEmail);
+        $user->setAddress($newAddress !== '' ? $newAddress : null);
         $this->entityManager->flush();
 
         return ['Profile successfully updated.', ''];

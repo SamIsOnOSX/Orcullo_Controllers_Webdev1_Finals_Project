@@ -166,6 +166,7 @@ final class AdminController extends AbstractController
         $targetId = (int) $request->request->get('user_id', 0);
         $username = trim((string) $request->request->get('username', ''));
         $email = trim((string) $request->request->get('email', ''));
+        $address = trim((string) $request->request->get('address', ''));
         $role = strtolower(trim((string) $request->request->get('role', 'customer')));
 
         // Map legacy 'user' to the database 'customer' role.
@@ -186,6 +187,7 @@ final class AdminController extends AbstractController
             if ($error === null) {
                 $target->setUsername($username);
                 $target->setEmail($email);
+                $target->setAddress($address !== '' ? $address : null);
                 $target->setRole($role);
                 $this->entityManager->flush();
                 $this->addFlash('admin_message', "User #$targetId successfully updated to " . ucfirst($role) . '.');

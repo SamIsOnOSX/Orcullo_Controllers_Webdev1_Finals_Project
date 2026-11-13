@@ -6,25 +6,65 @@
             <p class="empty-text">No orders have been placed yet.</p>
         </div>
     {% else %}
+        <div class="scroll-top-wrapper">
         <table class="order-table">
             <thead>
                 <tr>
                     <th>Order ID</th>
                     <th>Customer</th>
                     <th>Date</th>
+                    <th>Items & Custom Builds</th>
                     <th>Total Amount</th>
                     <th>Payment</th>
                     <th>Proof</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <th>Status & Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for order in orders %}
                     <tr>
                         <td><span class="order-id-tag">#{{ order.id }}</span></td>
-                        <td>{{ order.user ? order.user.username : 'Unknown' }}</td>
-                        <td>{{ order.createdAt ? order.createdAt|date('M j, Y') : '-' }}</td>
+                        <td>
+                            <div class="customer-info-cell">
+                                <span class="customer-name">{{ order.user ? order.user.username : 'Unknown' }}</span>
+                                {% if order.user and order.user.email %}
+                                    <span class="customer-email">{{ order.user.email }}</span>
+                                {% endif %}
+                                {% if order.shippingAddress or (order.user and order.user.address) %}
+                                    <span class="customer-address" title="Delivery Address: {{ order.shippingAddress|default(order.user.address) }}">
+                                        <i class="fa-solid fa-location-dot"></i> {{ order.shippingAddress|default(order.user.address) }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td><span class="date-cell">{{ order.createdAt ? order.createdAt|date('M j, Y') : '-' }}</span></td>
+                        <td class="order-items-cell">
+                            {% if order.items is empty %}
+                                <span class="item-none-text">No item data</span>
+                            {% else %}
+                                <div class="order-items-list">
+                                    {% for item in order.items %}
+                                        <div class="order-item-chip">
+                                            <div class="order-item-desc">
+                                                <span class="order-item-title">{{ item.itemType|replace({'_': ' '}) }}</span>
+                                                {% if item.buttonColor %}
+                                                    <span class="order-item-btn-color">Buttons: {{ item.buttonColor|capitalize }}</span>
+                                                {% endif %}
+                                            </div>
+
+                                            {% if item.artworkPath %}
+                                                <a href="{{ asset(item.artworkPath) }}" target="_blank" class="custom-art-badge" title="Click to view customer's custom artwork">
+                                                    <img src="{{ asset(item.artworkPath) }}" alt="Custom artwork" class="custom-art-thumb">
+                                                    <span><i class="fa-solid fa-paintbrush"></i> Custom Art</span>
+                                                </a>
+                                            {% elseif item.product is null %}
+                                                <span class="custom-tag-label"><i class="fa-solid fa-sliders"></i> Custom Build</span>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </td>
                         <td><span class="price-cell">${{ order.totalAmount|number_format(2) }}</span></td>
                         <td>
                             {% if order.paymentMethod|lower == 'online' %}
@@ -34,42 +74,44 @@
                             {% endif %}
                         </td>
                         <td class="proof-cell">
-                            {% if order.paymentProof %}
-                                <a href="{{ asset(order.paymentProof) }}" target="_blank" class="proof-link proof-link--img" title="Click to view full proof">
-                                    {% if order.paymentProof|lower ends with '.pdf' %}
-                                        <div class="proof-pdf-box">
-                                            <i class="fa-solid fa-file-pdf"></i>
-                                            <span>PDF Document</span>
-                                        </div>
-                                    {% else %}
-                                        <div class="proof-thumb-wrapper">
-                                            <img src="{{ asset(order.paymentProof) }}" alt="Payment proof for order #{{ order.id }}" class="proof-thumbnail">
-                                            <span class="proof-hover-overlay"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
-                                        </div>
-                                    {% endif %}
-                                </a>
-                            {% else %}
-                                <span class="proof-none" title="No payment proof uploaded">
-                                    <i class="fa-solid fa-circle-minus"></i>
-                                    <span>None</span>
-                                </span>
-                            {% endif %}
-                            
-                            {# Admin feature: attach (COD) or replace (online) the proof of payment file #}
-                            <form method="POST" action="{{ path('admin_order_proof') }}" enctype="multipart/form-data" class="proof-upload-form">
-                                <input type="hidden" name="_token" value="{{ csrf_token('admin_order_proof') }}">
-                                <input type="hidden" name="order_id" value="{{ order.id }}">
-                                <label class="proof-file-label" title="Choose file">
-                                    <i class="fa-solid fa-paperclip"></i>
-                                    <span class="proof-file-text">Choose file</span>
-                                    <input type="file" name="payment_proof" accept=".jpg,.jpeg,.png,.webp,.pdf" class="proof-upload-input" required onchange="this.previousElementSibling.textContent = this.files[0] ? this.files[0].name : 'Choose file'; this.closest('form').querySelector('.btn-proof-upload').classList.add('ready');">
-                                </label>
-                                <button type="submit" name="upload_proof" class="btn-proof-upload" title="Upload and save proof">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i> {{ order.paymentProof ? 'Replace' : 'Upload' }}
-                                </button>
-                            </form>
+                            <div class="proof-content-wrap">
+                                {% if order.paymentProof %}
+                                    <a href="{{ asset(order.paymentProof) }}" target="_blank" class="proof-link proof-link--img" title="Click to view full proof">
+                                        {% if order.paymentProof|lower ends with '.pdf' %}
+                                            <div class="proof-pdf-box">
+                                                <i class="fa-solid fa-file-pdf"></i>
+                                                <span>PDF Document</span>
+                                            </div>
+                                        {% else %}
+                                            <div class="proof-thumb-wrapper">
+                                                <img src="{{ asset(order.paymentProof) }}" alt="Payment proof for order #{{ order.id }}" class="proof-thumbnail">
+                                                <span class="proof-hover-overlay"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+                                            </div>
+                                        {% endif %}
+                                    </a>
+                                {% else %}
+                                    <span class="proof-none" title="No payment proof uploaded">
+                                        <i class="fa-solid fa-circle-minus"></i>
+                                        <span>None</span>
+                                    </span>
+                                {% endif %}
+                                
+                                {# Admin feature: attach (COD) or replace (online) the proof of payment file #}
+                                <form method="POST" action="{{ path('admin_order_proof') }}" enctype="multipart/form-data" class="proof-upload-form">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('admin_order_proof') }}">
+                                    <input type="hidden" name="order_id" value="{{ order.id }}">
+                                    <label class="proof-file-label" title="Choose file">
+                                        <i class="fa-solid fa-paperclip"></i>
+                                        <span class="proof-file-text">Choose file</span>
+                                        <input type="file" name="payment_proof" accept=".jpg,.jpeg,.png,.webp,.pdf" class="proof-upload-input" required onchange="this.previousElementSibling.textContent = this.files[0] ? this.files[0].name : 'Choose file'; this.closest('form').querySelector('.btn-proof-upload').classList.add('ready');">
+                                    </label>
+                                    <button type="submit" name="upload_proof" class="btn-proof-upload" title="Upload and save proof">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i> {{ order.paymentProof ? 'Replace' : 'Upload' }}
+                                    </button>
+                                </form>
+                            </div>
                         </td>
-                        <td>
+                        <td class="action-cell">
                             <form method="POST" action="{{ path('admin_update_order') }}" class="order-status-form">
                                 <input type="hidden" name="_token" value="{{ csrf_token('admin_update_order') }}">
                                 <input type="hidden" name="order_id" value="{{ order.id }}">
@@ -87,5 +129,6 @@
                 {% endfor %}
             </tbody>
         </table>
+        </div>{# /.scroll-top-wrapper #}
     {% endif %}
 </div>

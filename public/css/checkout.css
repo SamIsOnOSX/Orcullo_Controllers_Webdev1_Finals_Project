@@ -531,3 +531,98 @@
     color: #ff41a1;
     flex-shrink: 0;
 }
+
+/* ── Delivery / Shipping Address Section ── */
+.delivery-address-section {
+    margin-bottom: 24px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.section-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.checkout-section-title {
+    font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+    font-size: 1rem;
+    font-weight: 700;
+    color: #d6cee3;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+.checkout-section-title i {
+    color: #ff9b44;
+}
+
+.saved-address-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: #34d399;
+    background: rgba(52, 211, 153, 0.12);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    padding: 3px 9px;
+    border-radius: 12px;
+}
+
+.address-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.address-input-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #c0b8cc;
+}
+
+.required-star {
+    color: #ff41a1;
+}
+
+.address-subhint {
+    font-size: 0.74rem;
+    font-weight: 400;
+    color: #7a7290;
+}
+
+.checkout-address-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    background: rgba(10, 4, 18, 0.75);
+    border: 1.5px solid rgba(255, 65, 161, 0.28);
+    border-radius: 10px;
+    color: #ffffff;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 80px;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.checkout-address-textarea:focus {
+    outline: none;
+    border-color: #ff41a1;
+    box-shadow: 0 0 15px rgba(255, 65, 161, 0.25);
+    background: rgba(10, 4, 18, 0.95);
+}
+
+.checkout-address-textarea::placeholder {
+    color: #615873;
+}
+

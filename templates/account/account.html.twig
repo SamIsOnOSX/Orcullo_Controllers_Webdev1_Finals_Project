@@ -27,6 +27,9 @@
                     <h1 class="customer-hero-name">{{ user.username }}</h1>
                     <p class="customer-hero-meta">
                         <span><i class="fa-solid fa-envelope"></i> {{ user.email }}</span>
+                        {% if user.address %}
+                            <span><i class="fa-solid fa-location-dot"></i> {{ user.address|length > 35 ? (user.address|slice(0, 35) ~ '...') : user.address }}</span>
+                        {% endif %}
                         <span><i class="fa-solid fa-calendar-check"></i> Member</span>
                     </p>
                 </div>
@@ -95,6 +98,11 @@
                         <div class="form-group">
                             <label for="user_email"><i class="fa-solid fa-envelope label-icon"></i> Email Address</label>
                             <input type="email" id="user_email" name="email" value="{{ user.email }}" required autocomplete="email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="user_address"><i class="fa-solid fa-location-dot label-icon"></i> Shipping Address</label>
+                            <textarea id="user_address" name="address" rows="3" placeholder="Enter your full street address, city, and postal code for deliveries">{{ user.address }}</textarea>
                         </div>
 
                         <button type="submit" name="update_profile" class="btn-primary">
@@ -167,11 +175,13 @@
                     </div>
                 {% else %}
                     <div class="table-responsive">
+                        <div class="scroll-top-wrapper">
                         <table class="order-table">
                             <thead>
                                 <tr>
                                     <th>Order ID</th>
                                     <th>Date</th>
+                                    <th>Delivery Address</th>
                                     <th>Total Amount</th>
                                     <th>Payment</th>
                                     <th>Proof</th>
@@ -194,6 +204,15 @@
                                     <tr>
                                         <td><span class="order-id-tag">#{{ order.id }}</span></td>
                                         <td>{{ order.createdAt ? order.createdAt|date('M j, Y') : '-' }}</td>
+                                        <td>
+                                            {% if order.shippingAddress or (order.user and order.user.address) %}
+                                                <span class="customer-address" title="{{ order.shippingAddress|default(order.user.address) }}">
+                                                    <i class="fa-solid fa-location-dot"></i> {{ (order.shippingAddress|default(order.user.address))|length > 30 ? ((order.shippingAddress|default(order.user.address))|slice(0, 30) ~ '...') : (order.shippingAddress|default(order.user.address)) }}
+                                                </span>
+                                            {% else %}
+                                                <span class="item-none-text">-</span>
+                                            {% endif %}
+                                        </td>
                                         <td><span class="price-cell">${{ order.totalAmount|number_format(2) }}</span></td>
                                         <td>
                                             {% if order.paymentMethod|lower == 'online' %}
@@ -223,6 +242,7 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                        </div>{# /.scroll-top-wrapper #}
                     </div>
                 {% endif %}
             </div>

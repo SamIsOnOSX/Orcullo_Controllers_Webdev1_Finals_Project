@@ -192,7 +192,7 @@
 .admin-content-area {
     flex: 1;
     width: 100%;
-    max-width: 1220px;
+    max-width: 1380px;
     margin: 0 auto;
     padding: 28px 32px 56px;
     min-width: 0;
@@ -590,6 +590,46 @@
     overflow-x: auto;
 }
 
+/* Scrollbar-on-top trick: flip the wrapper and un-flip the inner content */
+.scroll-top-wrapper {
+    overflow-x: auto;
+    transform: rotateX(180deg);
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff41a1 rgba(25, 10, 38, 0.7);
+}
+
+.scroll-top-wrapper .order-table {
+    transform: rotateX(180deg);
+}
+
+/* Custom styled horizontal scrollbar across platforms & browsers */
+.scroll-top-wrapper::-webkit-scrollbar,
+.table-responsive::-webkit-scrollbar {
+    height: 9px;
+    width: 9px;
+}
+
+.scroll-top-wrapper::-webkit-scrollbar-track,
+.table-responsive::-webkit-scrollbar-track {
+    background: rgba(18, 7, 28, 0.75);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.scroll-top-wrapper::-webkit-scrollbar-thumb,
+.table-responsive::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, #ff41a1, #ff9b44);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.scroll-top-wrapper::-webkit-scrollbar-thumb:hover,
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(90deg, #ff5eb0, #ffa959);
+    box-shadow: 0 0 10px rgba(255, 65, 161, 0.5);
+}
+
 .order-table {
     width: 100%;
     border-collapse: collapse;
@@ -638,6 +678,156 @@
     font-family: var(--font-heading, 'Space Grotesk', sans-serif);
     font-weight: 700;
     color: #ffffff;
+    white-space: nowrap;
+}
+
+.date-cell {
+    font-size: 0.85rem;
+    color: #cbd5e1;
+    white-space: nowrap;
+}
+
+.customer-info-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.customer-name {
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 0.92rem;
+}
+
+.customer-email {
+    font-size: 0.75rem;
+    color: #8b7d9b;
+}
+
+.customer-address {
+    font-size: 0.72rem;
+    color: #c4b5fd;
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 4px;
+    max-width: 180px;
+    line-height: 1.3;
+    word-break: break-word;
+    background: rgba(167, 139, 250, 0.08);
+    border: 1px solid rgba(167, 139, 250, 0.2);
+    padding: 3px 6px;
+    border-radius: 6px;
+    margin-top: 3px;
+}
+
+.customer-address i {
+    color: #ff9b44;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* Items & Custom Artwork in Orders Table */
+.order-items-cell {
+    min-width: 200px;
+    max-width: 280px;
+}
+
+.order-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.order-item-chip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 11px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 8px;
+}
+
+.order-item-desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.order-item-title {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.order-item-btn-color {
+    font-size: 0.72rem;
+    color: #a78bfa;
+}
+
+.custom-tag-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 7px;
+    background: rgba(255, 65, 161, 0.14);
+    border: 1px solid rgba(255, 65, 161, 0.35);
+    border-radius: 5px;
+    color: #ff9b44;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.custom-art-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px 3px 4px;
+    background: rgba(168, 85, 247, 0.16);
+    border: 1px solid rgba(168, 85, 247, 0.45);
+    border-radius: 6px;
+    color: #d8b4fe;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.custom-art-badge:hover {
+    background: rgba(168, 85, 247, 0.3);
+    border-color: #c084fc;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.custom-art-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: block;
+    background: #000000;
+}
+
+.item-none-text {
+    color: #64748b;
+    font-size: 0.82rem;
+    font-style: italic;
+}
+
+.action-cell {
+    min-width: 140px;
+}
 }
 
 /* Status Badges */
@@ -810,7 +1000,8 @@
 }
 
 .input-user-name,
-.input-user-email {
+.input-user-email,
+.input-user-address {
     padding: 7px 10px;
     background: #07030c;
     color: #ffffff;
@@ -818,6 +1009,7 @@
     border-radius: 8px;
     outline: none;
     font-size: 0.9rem;
+    box-sizing: border-box;
 }
 
 .input-user-name {
@@ -828,12 +1020,19 @@
     width: 170px;
 }
 
+.input-user-address {
+    width: 200px;
+}
+
 .input-user-name:focus,
-.input-user-email:focus {
+.input-user-email:focus,
+.input-user-address:focus {
     border-color: #ff41a1;
 }
 
 .table-select {
+    width: 100%;
+    min-width: 125px;
     padding: 7px 12px;
     background-color: #07030c;
     color: #ffffff;
@@ -842,6 +1041,7 @@
     outline: none;
     font-size: 0.88rem;
     cursor: pointer;
+    box-sizing: border-box;
 }
 
 .table-select:focus {
@@ -854,6 +1054,8 @@
 
 .btn-save-user,
 .btn-update-order {
+    width: 100%;
+    min-width: 125px;
     padding: 7px 14px;
     background: var(--gradient-primary, linear-gradient(90deg, #ff41a1, #ff9b44));
     color: #ffffff;
@@ -863,6 +1065,7 @@
     font-size: 0.82rem;
     cursor: pointer;
     transition: opacity 0.2s, transform 0.15s;
+    box-sizing: border-box;
 }
 
 .btn-save-user:hover,
@@ -1112,7 +1315,17 @@
 /* ── Proof of Payment Cell ── */
 .proof-cell {
     text-align: center;
-    min-width: 170px;
+    width: 155px;
+    min-width: 155px;
+}
+
+.proof-content-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    width: 130px;
 }
 
 .proof-none {
@@ -1321,7 +1534,8 @@
     align-items: center;
     gap: 6px;
     margin-top: 8px;
-    width: 100%;
+    width: 130px;
+    box-sizing: border-box;
 }
 
 .proof-file-label {
@@ -1330,7 +1544,8 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    width: 130px;
+    width: 100%;
+    box-sizing: border-box;
     padding: 5px 8px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px dashed rgba(255, 255, 255, 0.2);
@@ -1377,7 +1592,8 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
-    width: 130px;
+    width: 100%;
+    box-sizing: border-box;
     padding: 5px 10px;
     font-size: 0.7rem;
     font-weight: 700;

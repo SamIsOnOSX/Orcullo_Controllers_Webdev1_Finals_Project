@@ -6,6 +6,7 @@
             <p class="empty-text">No products found in the catalog.</p>
         </div>
     {% else %}
+        <div class="scroll-top-wrapper">
         <table class="order-table">
             <thead>
                 <tr>
@@ -54,5 +55,6 @@
                 {% endfor %}
             </tbody>
         </table>
+        </div>{# /.scroll-top-wrapper #}
     {% endif %}
 </div>

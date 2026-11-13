@@ -69,6 +69,32 @@
                 <form method="POST" action="{{ path('checkout_confirm') }}" class="checkout-form" enctype="multipart/form-data">
                     <input type="hidden" name="_token" value="{{ csrf_token('confirm_checkout') }}">
 
+                    <!-- Delivery / Shipping Address Section -->
+                    <div class="delivery-address-section">
+                        <div class="section-title-row">
+                            <h4 class="checkout-section-title">
+                                <i class="fa-solid fa-truck-ramp-box"></i> Delivery Address
+                            </h4>
+                            {% if app.user and app.user.address %}
+                                <span class="saved-address-hint"><i class="fa-solid fa-circle-check"></i> Loaded from profile</span>
+                            {% endif %}
+                        </div>
+                        <div class="address-input-wrapper">
+                            <label for="shipping_address" class="address-input-label">
+                                <span>Full Delivery Address <span class="required-star">*</span></span>
+                                <span class="address-subhint">Include House/Unit No., Street, Barangay/District, City &amp; Postal Code</span>
+                            </label>
+                            <textarea 
+                                name="shipping_address" 
+                                id="shipping_address" 
+                                rows="3" 
+                                class="checkout-address-textarea" 
+                                placeholder="e.g. Unit 402 Solinea Tower 1, Cebu Business Park, Cebu City, 6000" 
+                                required
+                            >{{ app.user ? app.user.address : '' }}</textarea>
+                        </div>
+                    </div>
+
                     <!-- Payment Method Selection -->
                     <div class="payment-method-section">
                         <h4 class="payment-method-title">

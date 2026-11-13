@@ -17,12 +17,13 @@ class OrderRepository extends ServiceEntityRepository
         parent::__construct($registry, Order::class);
     }
 
-    /** All orders with the customer joined in, newest first (legacy admin view). @return list<Order> */
+    /** All orders with the customer and items joined in, newest first (legacy admin view). @return list<Order> */
     public function findAllNewestFirst(): array
     {
         return $this->createQueryBuilder('o')
-            ->addSelect('u')
+            ->addSelect('u', 'i')
             ->leftJoin('o.user', 'u')
+            ->leftJoin('o.items', 'i')
             ->orderBy('o.createdAt', 'DESC')
             ->addOrderBy('o.id', 'DESC')
             ->getQuery()

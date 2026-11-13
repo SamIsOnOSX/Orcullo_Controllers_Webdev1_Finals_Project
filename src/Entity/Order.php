@@ -52,6 +52,9 @@ class Order
     #[ORM\Column(name: 'payment_proof', type: 'string', length: 500, nullable: true)]
     private ?string $paymentProof = null;
 
+    #[ORM\Column(name: 'shipping_address', type: 'text', nullable: true)]
+    private ?string $shippingAddress = null;
+
     #[ORM\Column(name: 'status', type: 'string', length: 20, options: ['default' => 'pending'])]
     private string $status = self::STATUS_PENDING;
 
@@ -117,6 +120,18 @@ class Order
     public function setPaymentProof(?string $paymentProof): static
     {
         $this->paymentProof = $paymentProof;
+
+        return $this;
+    }
+
+    public function getShippingAddress(): ?string
+    {
+        return $this->shippingAddress;
+    }
+
+    public function setShippingAddress(?string $shippingAddress): static
+    {
+        $this->shippingAddress = $shippingAddress;
 
         return $this;
     }
