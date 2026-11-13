@@ -62,7 +62,18 @@
                         </select>
                     </td>
                     <td>
-                        <button type="submit" name="update_user" form="user-form-{{ u.id }}" class="btn-save-user">Save</button>
+                        <div class="user-action-row">
+                            <button type="submit" name="update_user" form="user-form-{{ u.id }}" class="btn-save-user">Save</button>
+                            {% if u.id != app.user.id %}
+                            <form method="POST" action="{{ path('admin_delete_user') }}" class="inline-form" onsubmit="return confirm('Delete user \'{{ u.username|e('js') }}\'? All of their orders will be permanently removed too.');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin_delete_user') }}">
+                                <input type="hidden" name="user_id" value="{{ u.id }}">
+                                <button type="submit" name="delete_user" class="btn-delete" title="Delete this user">
+                                    <i class="fa-solid fa-trash"></i> Delete
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
                     </td>
                 </tr>
                 <form id="user-form-{{ u.id }}" method="POST" action="{{ path('admin_update_user') }}">

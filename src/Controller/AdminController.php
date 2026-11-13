@@ -242,6 +242,45 @@ final class AdminController extends AbstractController
         return $this->redirectToRoute('admin_users');
     }
 
+    /**
+     * Permanently removes a user account. Their orders are removed with
+     * them (legacy ON DELETE CASCADE) and products they created stay but
+     * become shop-owned (ON DELETE SET NULL). Staff members cannot reach
+     * this route (admin-only).
+     */
+    #[Route('/users/delete', name: 'admin_delete_user', methods: ['POST'])]
+    public function deleteUser(Request $request): RedirectResponse
+    {
+        $targetId = (int) $request->request->get('user_id', 0);
+
+        /** @var \App\Entity\User $currentUser */
+        $currentUser = $this->getUser();
+
+        if (!$this->isCsrfTokenValid('admin_delete_user', (string) $request->request->get('_token'))) {
+            $error = 'Your session expired. Please try again.';
+        } elseif ($targetId <= 0) {
+            $error = 'Invalid user ID.';
+        } elseif ($targetId === $currentUser->getId()) {
+            $error = 'You cannot delete your own account.';
+        } else {
+            $target = $this->userRepository->find($targetId);
+
+            if ($target === null) {
+                $error = "User #$targetId not found.";
+            } else {
+                $this->entityManager->remove($target);
+                $this->entityManager->flush();
+                $this->addFlash('admin_message', "User '" . $target->getUsername() . "' and all of their orders were permanently deleted.");
+
+                return $this->redirectToRoute('admin_users');
+            }
+        }
+
+        $this->addFlash('admin_error', $error);
+
+        return $this->redirectToRoute('admin_users');
+    }
+
     #[Route('/orders/status', name: 'admin_update_order', methods: ['POST'])]
     public function updateOrderStatus(Request $request): RedirectResponse
     {
