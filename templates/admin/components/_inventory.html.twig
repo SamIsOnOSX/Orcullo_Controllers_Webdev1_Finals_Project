@@ -1,5 +1,13 @@
 <div class="dashboard-card table-responsive">
     <h3><i class="fa-solid fa-boxes-stacked card-icon"></i>Inventory &amp; Stock Management ({{ products|length }})</h3>
+    {% include 'admin/components/_table_search.html.twig' with {
+        search_action: path('admin_products'),
+        search_q: search_q|default(''),
+        search_placeholder: 'Search products by name or description…',
+    } only %}
+    {% if search_q|default('') %}
+        <p class="admin-section-note"><i class="fa-solid fa-filter"></i> Showing {{ products|length }} matching product(s) for "{{ search_q }}".</p>
+    {% endif %}
     {% if products is empty %}
         <div class="empty-state-box">
             <i class="fa-solid fa-boxes-stacked empty-icon"></i>

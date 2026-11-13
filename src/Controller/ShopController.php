@@ -6,6 +6,7 @@ use App\Entity\Product;
 use App\Repository\ProductRepository;
 use App\Service\CartService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -18,10 +19,13 @@ class ShopController extends AbstractController
     }
 
     #[Route('/shop', name: 'shop')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $q = trim((string) $request->query->get('q', ''));
+
         return $this->render('shop/shop.html.twig', [
-            'products' => $this->productRepository->findAllNewestFirst(),
+            'products' => $this->productRepository->searchProducts($q),
+            'search_q' => $q,
             'cart_items' => $this->cartItemsForPanel(),
             'cart_count' => $this->cartService->count(),
             'cart_total' => $this->cartService->getTotal(),

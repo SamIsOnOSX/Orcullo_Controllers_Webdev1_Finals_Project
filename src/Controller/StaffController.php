@@ -36,12 +36,15 @@ final class StaffController extends AbstractController
     }
 
     #[Route('/products', name: 'staff_products')]
-    public function products(): Response
+    public function products(Request $request): Response
     {
+        $q = trim((string) $request->query->get('q', ''));
+
         return $this->render('staff/products.html.twig', [
-            'products' => $this->productRepository->findAllNewestFirst(),
+            'products' => $this->productRepository->searchProducts($q),
             'available_assets' => $this->getAvailableAssets(),
             'edit_product' => null,
+            'search_q' => $q,
         ]);
     }
 

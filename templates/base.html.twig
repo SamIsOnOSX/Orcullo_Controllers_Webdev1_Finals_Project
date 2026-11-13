@@ -48,9 +48,12 @@
         </nav>
 
         <div class="header-actions">
-            <div class="search-bar">
-                <input type="text" placeholder="Search...">
-            </div>
+            <form method="GET" action="{{ path('shop') }}" class="search-bar">
+                <input type="text" name="q" value="{{ search_q|default('') }}" placeholder="Search products..." autocomplete="off">
+                <button type="submit" class="search-submit" title="Search products" aria-label="Search products">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
             <a href="{{ path('cart') }}" class="icon-link" title="Cart"><i class="fa-solid fa-cart-shopping"></i></a>
 
             {% if app.user %}

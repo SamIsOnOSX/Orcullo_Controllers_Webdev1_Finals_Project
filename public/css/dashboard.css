@@ -1743,6 +1743,81 @@
     gap: 8px;
 }
 
+/* ------------------------------------------------------------------
+ * Search & filter bars (admin tables + storefront header/shop)
+ * ------------------------------------------------------------------ */
+
+.table-search-form {
+    margin: 14px 0 4px;
+}
+
+.table-search-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    max-width: 640px;
+}
+
+.table-search-wrap i {
+    color: #ff9b44;
+    font-size: 0.8rem;
+}
+
+.table-search-wrap input[type="text"] {
+    flex: 1;
+    min-width: 120px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #f1f5f9;
+    font-size: 0.85rem;
+}
+
+.table-search-wrap input[type="text"]::placeholder {
+    color: #64748b;
+}
+
+.table-search-filter {
+    background: #12071d;
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 7px;
+    padding: 5px 8px;
+    font-size: 0.78rem;
+    cursor: pointer;
+}
+
+.btn-table-search {
+    padding: 6px 14px;
+    background: var(--gradient-primary, linear-gradient(90deg, #ff41a1, #ff9b44));
+    color: #ffffff;
+    border: none;
+    border-radius: 7px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-table-search:hover {
+    opacity: 0.9;
+}
+
+.clear-table-search {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.clear-table-search:hover {
+    color: #ff41a1;
+}
+
 /* ═══════════════════════════════════════════════════════════
    Customer Dashboard / Profile Page Modernization
    ═══════════════════════════════════════════════════════════ */

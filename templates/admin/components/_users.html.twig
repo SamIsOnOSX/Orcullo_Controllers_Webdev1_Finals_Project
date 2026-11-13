@@ -33,6 +33,21 @@
     <div class="card-header-bar">
         <h3><i class="fa-solid fa-users card-icon"></i>Manage Users ({{ users|length }})</h3>
     </div>
+    {% include 'admin/components/_table_search.html.twig' with {
+        search_action: path('admin_users'),
+        search_q: search_q|default(''),
+        search_placeholder: 'Search by username, email, role…',
+        search_filters: [
+            { value: '', label: 'All roles' },
+            { value: 'customer', label: 'Customers' },
+            { value: 'staff', label: 'Staff' },
+            { value: 'admin', label: 'Admins' },
+        ],
+        search_filter_value: role_filter|default(''),
+    } only %}
+    {% if search_q|default('') or role_filter|default('') %}
+        <p class="admin-section-note"><i class="fa-solid fa-filter"></i> Showing {{ users|length }} matching account(s){% if search_q|default('') %} for "{{ search_q }}"{% endif %}.</p>
+    {% endif %}
     <div class="scroll-top-wrapper">
     <table class="order-table">
         <thead>

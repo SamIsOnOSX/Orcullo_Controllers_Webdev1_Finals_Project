@@ -65,6 +65,34 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult();
     }
 
+    /**
+     * Admin search & filter: matches username, email or role, optionally
+     * narrowed to one exact role.
+     *
+     * @return list<User>
+     */
+    public function searchUsers(string $term, string $role = ''): array
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->orderBy('u.createdAt', 'DESC')
+            ->addOrderBy('u.id', 'DESC');
+
+        if ($term !== '') {
+            $qb->andWhere($qb->expr()->orX(
+                'u.username LIKE :term',
+                'u.email LIKE :term',
+                'u.role LIKE :term'
+            ))->setParameter('term', '%' . $term . '%');
+        }
+
+        if ($role !== '') {
+            $qb->andWhere('u.role = :role')
+                ->setParameter('role', $role);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
         if (!$user instanceof User) {

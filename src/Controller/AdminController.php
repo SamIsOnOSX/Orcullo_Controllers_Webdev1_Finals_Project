@@ -65,27 +65,40 @@ final class AdminController extends AbstractController
     }
 
     #[Route('/products', name: 'admin_products')]
-    public function products(): Response
+    public function products(Request $request): Response
     {
+        $q = trim((string) $request->query->get('q', ''));
+
         return $this->render('admin/products.html.twig', [
-            'products' => $this->productRepository->findAllNewestFirst(),
+            'products' => $this->productRepository->searchProducts($q),
             'available_assets' => $this->getAvailableAssets(),
+            'search_q' => $q,
         ]);
     }
 
     #[Route('/users', name: 'admin_users')]
-    public function users(): Response
+    public function users(Request $request): Response
     {
+        $q = trim((string) $request->query->get('q', ''));
+        $filter = trim((string) $request->query->get('filter', ''));
+
         return $this->render('admin/users.html.twig', [
-            'users' => $this->userRepository->findAllNewestFirst(),
+            'users' => $this->userRepository->searchUsers($q, $filter),
+            'search_q' => $q,
+            'role_filter' => $filter,
         ]);
     }
 
     #[Route('/orders', name: 'admin_orders')]
-    public function orders(): Response
+    public function orders(Request $request): Response
     {
+        $q = trim((string) $request->query->get('q', ''));
+        $filter = trim((string) $request->query->get('filter', ''));
+
         return $this->render('admin/orders.html.twig', [
-            'orders' => $this->orderRepository->findAllNewestFirst(),
+            'orders' => $this->orderRepository->searchOrders($q, $filter),
+            'search_q' => $q,
+            'status_filter' => $filter,
         ]);
     }
 

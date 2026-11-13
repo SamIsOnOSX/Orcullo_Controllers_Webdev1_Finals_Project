@@ -23,10 +23,13 @@
 
         <!-- Shop toolbar: search + cart shortcut with hover mini-cart -->
         <div class="shop-toolbar">
-            <div class="shop-search">
+            <form method="GET" action="{{ path('shop') }}" class="shop-search">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="shop_search" placeholder="Search products..." autocomplete="off">
-            </div>
+                <input type="text" id="shop_search" name="q" value="{{ search_q|default('') }}" placeholder="Search products..." autocomplete="off">
+                <button type="submit" class="shop-search-submit" title="Search products" aria-label="Search products">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
 
             <div class="shop-cart-wrap">
                 <a href="{{ path('cart') }}" class="shop-cart-shortcut">
@@ -78,14 +81,24 @@
             </div>
         </div>
 
+        {% if search_q|default('') %}
+            <p class="shop-search-note"><i class="fa-solid fa-filter"></i> Showing {{ products|length }} product(s) matching "{{ search_q }}" — <a href="{{ path('shop') }}">clear search</a></p>
+        {% endif %}
+
         <!-- Product Grid -->
         <div class="product-grid" id="product_grid">
             {% if products is empty %}
                 <div class="shop-empty-state">
                     <i class="fa-solid fa-box-open empty-icon"></i>
-                    <h3>No controllers currently in stock</h3>
-                    <p>Check back soon or customize your own controller today!</p>
-                    <a href="{{ path('customize') }}" class="btn btn-primary">Go to Customizer</a>
+                    {% if search_q|default('') %}
+                        <h3>No products match "{{ search_q }}"</h3>
+                        <p>Try a different search term or browse the full catalog.</p>
+                        <a href="{{ path('shop') }}" class="btn btn-primary">Clear Search</a>
+                    {% else %}
+                        <h3>No controllers currently in stock</h3>
+                        <p>Check back soon or customize your own controller today!</p>
+                        <a href="{{ path('customize') }}" class="btn btn-primary">Go to Customizer</a>
+                    {% endif %}
                 </div>
             {% else %}
                 {% for product in products %}

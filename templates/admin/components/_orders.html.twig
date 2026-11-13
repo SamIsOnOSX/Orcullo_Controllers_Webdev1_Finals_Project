@@ -1,5 +1,22 @@
 <div class="dashboard-card table-responsive">
     <h3><i class="fa-solid fa-receipt card-icon"></i>All Platform Orders ({{ orders|length }})</h3>
+    {% include 'admin/components/_table_search.html.twig' with {
+        search_action: path('admin_orders'),
+        search_q: search_q|default(''),
+        search_placeholder: 'Search by #id, customer, status, payment…',
+        search_filters: [
+            { value: '', label: 'All statuses' },
+            { value: 'pending', label: 'Pending' },
+            { value: 'paid', label: 'Paid' },
+            { value: 'shipped', label: 'Shipped' },
+            { value: 'delivered', label: 'Delivered' },
+            { value: 'cancelled', label: 'Cancelled' },
+        ],
+        search_filter_value: status_filter|default(''),
+    } only %}
+    {% if search_q|default('') or status_filter|default('') %}
+        <p class="admin-section-note"><i class="fa-solid fa-filter"></i> Showing {{ orders|length }} matching order(s){% if search_q|default('') %} for "{{ search_q }}"{% endif %}.</p>
+    {% endif %}
     {% if orders is empty %}
         <div class="empty-state-box">
             <i class="fa-solid fa-inbox empty-icon"></i>

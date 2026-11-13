@@ -173,6 +173,33 @@
     color: #666666;
 }
 
+/* Functional search: pill form with a submit arrow */
+.search-bar {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.search-bar input {
+    padding-right: 34px;
+}
+
+.search-submit {
+    position: absolute;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: #8d829b;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 2px;
+    transition: color 0.2s ease;
+}
+
+.search-submit:hover {
+    color: #ff41a1;
+}
+
 .header-actions .icon {
     display: flex;
     align-items: center;

@@ -30,6 +30,38 @@ class OrderRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Admin search & filter: matches the order id, customer username,
+     * status or payment method, optionally narrowed to one status.
+     *
+     * @return list<Order>
+     */
+    public function searchOrders(string $term, string $status = ''): array
+    {
+        $qb = $this->createQueryBuilder('o')
+            ->addSelect('u', 'i')
+            ->leftJoin('o.user', 'u')
+            ->leftJoin('o.items', 'i')
+            ->orderBy('o.createdAt', 'DESC')
+            ->addOrderBy('o.id', 'DESC');
+
+        if ($term !== '') {
+            $qb->andWhere($qb->expr()->orX(
+                'o.id LIKE :term',
+                'u.username LIKE :term',
+                'o.status LIKE :term',
+                'o.paymentMethod LIKE :term'
+            ))->setParameter('term', '%' . $term . '%');
+        }
+
+        if ($status !== '') {
+            $qb->andWhere('o.status = :status')
+                ->setParameter('status', $status);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     /** A customer's own order history, newest first (legacy user dashboard). @return list<Order> */
     public function findByUserNewestFirst(User $user): array
     {

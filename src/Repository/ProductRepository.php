@@ -27,6 +27,27 @@ class ProductRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Search products by name or description (used by the admin/staff
+     * tables and the storefront header search).
+     *
+     * @return list<Product>
+     */
+    public function searchProducts(string $term): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->orderBy('p.id', 'DESC');
+
+        if ($term !== '') {
+            $qb->andWhere($qb->expr()->orX(
+                'p.name LIKE :term',
+                'p.description LIKE :term'
+            ))->setParameter('term', '%' . $term . '%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     /** Products at or below the low-stock threshold (out of stock included). @return list<Product> */
     public function findLowStock(int $threshold = self::LOW_STOCK_THRESHOLD): array
     {

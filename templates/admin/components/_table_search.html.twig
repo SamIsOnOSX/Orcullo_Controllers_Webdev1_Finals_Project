@@ -1,0 +1,21 @@
+{# Generic table search bar.
+   Pass in: search_action (url), search_q (current term),
+   search_placeholder, and optionally search_filters (list of
+   {value, label}) + search_filter_value (current selection). #}
+<form method="GET" action="{{ search_action }}" class="table-search-form" autocomplete="off">
+    <div class="table-search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" name="q" value="{{ search_q }}" placeholder="{{ search_placeholder }}" maxlength="60" autocomplete="off">
+        {% if search_filters is defined and search_filters|length %}
+            <select name="filter" class="table-search-filter">
+                {% for f in search_filters %}
+                    <option value="{{ f.value }}" {{ f.value == search_filter_value|default('') ? 'selected' : '' }}>{{ f.label }}</option>
+                {% endfor %}
+            </select>
+        {% endif %}
+        <button type="submit" class="btn-table-search">Search</button>
+        {% if search_q or (search_filter_value is defined and search_filter_value) %}
+            <a href="{{ search_action }}" class="clear-table-search" title="Clear search &amp; filters"><i class="fa-solid fa-xmark"></i></a>
+        {% endif %}
+    </div>
+</form>
