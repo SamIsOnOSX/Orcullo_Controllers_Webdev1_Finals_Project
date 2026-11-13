@@ -40,6 +40,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'role', type: 'string', length: 10, options: ['default' => 'customer'])]
     private string $role = self::ROLE_CUSTOMER;
 
+    /**
+     * Admin switch: disabled accounts cannot sign in (their data is kept).
+     * Maps the users.disabled column added by Version20261113150000.
+     */
+    #[ORM\Column(name: 'disabled', type: 'boolean', options: ['default' => 0])]
+    private bool $disabled = false;
+
     #[ORM\Column(name: 'created_at', type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -157,5 +164,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function isStaff(): bool
     {
         return $this->role === self::ROLE_STAFF;
+    }
+
+    public function isDisabled(): bool
+    {
+        return $this->disabled;
+    }
+
+    public function setDisabled(bool $disabled): static
+    {
+        $this->disabled = $disabled;
+
+        return $this;
     }
 }

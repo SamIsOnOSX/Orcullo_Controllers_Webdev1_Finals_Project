@@ -999,6 +999,58 @@
     transition: opacity 0.2s, transform 0.15s;
 }
 
+/* Disable / Enable pair in the user management table */
+.btn-disable {
+    padding: 7px 12px;
+    background: #f59e0b;
+    color: #1a1028;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.82rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn-restore {
+    padding: 7px 12px;
+    background: #2ecc71;
+    color: #1a1028;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.82rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn-disable:hover,
+.btn-restore:hover {
+    opacity: 0.88;
+}
+
+/* Red chip shown next to the role of disabled accounts */
+.disabled-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    margin-left: 6px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: rgba(239, 68, 68, 0.18);
+    color: #f87171;
+    white-space: nowrap;
+}
+
+/* Dimmed background tint for a disabled user's table row */
+tr.user-row-disabled > td {
+    background: rgba(239, 68, 68, 0.08);
+}
+
 .btn-delete:hover {
     opacity: 0.9;
     transform: translateY(-1px);

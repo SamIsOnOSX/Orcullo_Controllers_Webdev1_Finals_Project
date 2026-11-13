@@ -62,7 +62,7 @@
         </thead>
         <tbody>
             {% for u in users %}
-                <tr>
+                <tr class="{{ u.disabled ? 'user-row-disabled' : '' }}">
                     <td><span class="order-id-tag">#{{ u.id }}</span></td>
                     <td><input type="text" name="username" value="{{ u.username }}" form="user-form-{{ u.id }}" class="input-user-name"></td>
                     <td><input type="email" name="email" value="{{ u.email }}" form="user-form-{{ u.id }}" class="input-user-email"></td>
@@ -75,11 +75,31 @@
                             <option value="staff" {{ u.role == 'staff' ? 'selected' : '' }}>Staff</option>
                             <option value="admin" {{ u.role == 'admin' ? 'selected' : '' }}>Admin</option>
                         </select>
+                        {% if u.disabled %}
+                            <span class="disabled-badge" title="This account cannot sign in"><i class="fa-solid fa-user-lock"></i> Disabled</span>
+                        {% endif %}
                     </td>
                     <td>
                         <div class="user-action-row">
                             <button type="submit" name="update_user" form="user-form-{{ u.id }}" class="btn-save-user">Save</button>
                             {% if u.id != app.user.id %}
+                            {% if u.disabled %}
+                            <form method="POST" action="{{ path('admin_toggle_user') }}" class="inline-form">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin_toggle_user') }}">
+                                <input type="hidden" name="user_id" value="{{ u.id }}">
+                                <button type="submit" name="toggle_user" class="btn-restore" title="Re-enable this account so they can sign in again">
+                                    <i class="fa-solid fa-user-check"></i> Enable
+                                </button>
+                            </form>
+                            {% else %}
+                            <form method="POST" action="{{ path('admin_toggle_user') }}" class="inline-form" onsubmit="return confirm('Disable \'{{ u.username|e('js') }}\'? They will not be able to sign in; their orders and records are kept.');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin_toggle_user') }}">
+                                <input type="hidden" name="user_id" value="{{ u.id }}">
+                                <button type="submit" name="toggle_user" class="btn-disable" title="Block sign-in for this account (data is kept)">
+                                    <i class="fa-solid fa-user-slash"></i> Disable
+                                </button>
+                            </form>
+                            {% endif %}
                             <form method="POST" action="{{ path('admin_delete_user') }}" class="inline-form" onsubmit="return confirm('Delete user \'{{ u.username|e('js') }}\'? All of their orders will be permanently removed too.');">
                                 <input type="hidden" name="_token" value="{{ csrf_token('admin_delete_user') }}">
                                 <input type="hidden" name="user_id" value="{{ u.id }}">

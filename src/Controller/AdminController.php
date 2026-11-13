@@ -294,6 +294,49 @@ final class AdminController extends AbstractController
         return $this->redirectToRoute('admin_users');
     }
 
+    /**
+     * Disable / re-enable an account (users.disabled switch). Disabled
+     * accounts cannot sign in, but their data (orders, products) is kept.
+     * Disabling your own account is blocked - you would lock yourself out.
+     */
+    #[Route('/users/toggle', name: 'admin_toggle_user', methods: ['POST'])]
+    public function toggleUser(Request $request): RedirectResponse
+    {
+        $targetId = (int) $request->request->get('user_id', 0);
+
+        /** @var \App\Entity\User $currentUser */
+        $currentUser = $this->getUser();
+
+        if (!$this->isCsrfTokenValid('admin_toggle_user', (string) $request->request->get('_token'))) {
+            $error = 'Your session expired. Please try again.';
+        } elseif ($targetId <= 0) {
+            $error = 'Invalid user ID.';
+        } elseif ($targetId === $currentUser->getId()) {
+            $error = 'You cannot disable your own account.';
+        } else {
+            $target = $this->userRepository->find($targetId);
+
+            if ($target === null) {
+                $error = "User #$targetId not found.";
+            } else {
+                $target->setDisabled(!$target->isDisabled());
+                $this->entityManager->flush();
+
+                $message = $target->isDisabled()
+                    ? "Account '" . $target->getUsername() . "' has been disabled. They can no longer sign in; their orders and records are kept."
+                    : "Account '" . $target->getUsername() . "' has been re-enabled.";
+
+                $this->addFlash('admin_message', $message);
+
+                return $this->redirectToRoute('admin_users');
+            }
+        }
+
+        $this->addFlash('admin_error', $error);
+
+        return $this->redirectToRoute('admin_users');
+    }
+
     #[Route('/orders/status', name: 'admin_update_order', methods: ['POST'])]
     public function updateOrderStatus(Request $request): RedirectResponse
     {
