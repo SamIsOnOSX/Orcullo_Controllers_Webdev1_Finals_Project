@@ -475,3 +475,79 @@
     backdrop-filter: blur(10px); /* Creates a frosted glass effect over the gradient */
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+/* -------------------------------------------------------------
+   Responsive Mobile Adjustments
+   ------------------------------------------------------------- */
+@media (max-width: 900px) {
+    .site-section,
+    .content-section,
+    .testimonials-section {
+        padding: 50px 30px;
+    }
+
+    .card-grid.col-4,
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px;
+    }
+
+    .card-grid.col-3,
+    .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px;
+    }
+
+    .split-layout,
+    .why-us-grid {
+        display: flex !important;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .showcase-img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .site-section,
+    .content-section,
+    .testimonials-section {
+        padding: 40px 16px;
+    }
+
+    .card-grid.col-4,
+    .categories-grid,
+    .card-grid.col-3,
+    .testimonials-grid,
+    .perks-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .categories-section .section-header h2,
+    .buy-now-section .section-header h2,
+    .testimonials-header h2 {
+        font-size: 22px;
+    }
+
+    .why-us-text h2 {
+        font-size: 22px;
+    }
+
+    .category-card {
+        height: 140px;
+    }
+
+    .product-img {
+        height: 180px;
+    }
+}

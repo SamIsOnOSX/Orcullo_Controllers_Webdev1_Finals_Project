@@ -92,3 +92,53 @@
     color: #666;
     font-size: 12px;
 }
+
+/* -------------------------------------------------------------
+   Responsive Mobile Adjustments
+   ------------------------------------------------------------- */
+@media (max-width: 900px) {
+    .main-footer {
+        padding: 40px 30px 20px;
+    }
+
+    .footer-container {
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+
+    .brand-column {
+        flex: 1 1 100%;
+    }
+
+    .footer-column p {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .main-footer {
+        padding: 30px 16px 20px;
+    }
+
+    .footer-container {
+        flex-direction: column;
+        gap: 25px;
+        margin-bottom: 25px;
+    }
+
+    .newsletter-form {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .newsletter-form input {
+        border-right: 1px solid #2a1642;
+        border-radius: 4px;
+        width: 100%;
+    }
+
+    .newsletter-form button {
+        border-radius: 4px;
+        width: 100%;
+    }
+}

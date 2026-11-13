@@ -18,3 +18,10 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+# Local accounts / credentials
+accounts.txt
+
+# Uploads directory (user-submitted images & payment proofs)
+/public/uploads/
+

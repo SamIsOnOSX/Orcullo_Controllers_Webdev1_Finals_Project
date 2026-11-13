@@ -68,6 +68,10 @@
                     <span>Login</span>
                 </a>
             {% endif %}
+
+            <button type="button" class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                <i class="fa-solid fa-bars"></i>
+            </button>
         </div>
     </header>
     {% endblock %}
@@ -114,6 +118,23 @@
         </div>
     </footer>
     {% endblock %}
-    {% block javascripts %}{% endblock %}
+    {% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var toggle = document.getElementById('mobileNavToggle');
+            var nav = document.querySelector('.main-nav');
+            if (toggle && nav) {
+                toggle.addEventListener('click', function() {
+                    var isOpen = nav.classList.toggle('is-open');
+                    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                    var icon = toggle.querySelector('i');
+                    if (icon) {
+                        icon.className = isOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+                    }
+                });
+            }
+        });
+    </script>
+    {% endblock %}
 </body>
 </html>

@@ -2,6 +2,12 @@
 framework:
     secret: '%env(APP_SECRET)%'
 
+    # ngrok tunnels to the local server, forwarding the original scheme/host
+    # via X-Forwarded-* headers. Trust them so links, cookies and CSRF
+    # checks work correctly behind the tunnel.
+    trusted_proxies: '127.0.0.1,REMOTE_ADDR'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port']
+
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 

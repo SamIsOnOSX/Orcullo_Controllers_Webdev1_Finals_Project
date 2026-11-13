@@ -212,3 +212,97 @@
 .header-actions .icon:hover {
     color: #ff9b44;
 }
+
+/* -------------------------------------------------------------
+   Mobile & Responsive Navigation
+   ------------------------------------------------------------- */
+.mobile-nav-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-left: 4px;
+    line-height: 1;
+}
+
+.mobile-nav-toggle:hover {
+    color: #ff41a1;
+}
+
+@media (max-width: 900px) {
+    .main-header {
+        padding: 14px 20px;
+        flex-wrap: wrap;
+        row-gap: 12px;
+    }
+
+    .mobile-nav-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .header-actions {
+        margin-left: auto;
+        gap: 10px;
+    }
+
+    .main-nav {
+        order: 3;
+        width: 100%;
+        margin: 0;
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding-top: 14px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .main-nav.is-open {
+        display: flex;
+    }
+
+    .main-nav a {
+        font-size: 15px;
+        padding: 6px 0;
+        width: 100%;
+    }
+
+    .search-bar input {
+        width: 130px;
+    }
+}
+
+@media (max-width: 540px) {
+    .main-header {
+        padding: 12px 16px;
+    }
+
+    .text-logo {
+        display: none; /* Keep the emblem on small mobile to save space */
+    }
+
+    .header-user-name {
+        display: none; /* Show only avatar pill on small screens */
+    }
+
+    .header-user-badge {
+        padding: 4px;
+    }
+
+    .search-bar input {
+        width: 110px;
+        font-size: 12px;
+        padding: 6px 28px 6px 12px;
+    }
+
+    .search-submit {
+        right: 8px;
+        font-size: 12px;
+    }
+}
